@@ -126,7 +126,7 @@ Para crear una biblioteca nueva:
 
 1. Crea una carpeta con un nombre que identifique la herramienta dentro de `libraries/`.
 2. Separa los modelos, la integración con datos y la interfaz cuando corresponda.
-3. Agrega pruebas para los comportamientos propios de la biblioteca.
+3. Planifica pruebas para los comportamientos propios de la biblioteca y ejecútalas en la etapa de preparación para producción.
 4. Documenta el propósito, la API y la forma de uso en un `README.md` dentro de la biblioteca.
 5. Mantén la biblioteca independiente de reglas de negocio y de aplicaciones consumidoras.
 
@@ -140,6 +140,8 @@ Para incorporar el selector en una aplicación Angular:
 `SelectorSedeComponent` es puramente visual: recibe `sedes`, `sedeSeleccionada`, `cargando` y `error`, y emite la sede seleccionada o la solicitud de reintento. No accede directamente a la red. El servicio HTTP de sedes permanece en `libraries/selector-sede/`; no se duplica como servicio de negocio en cada sistema consumidor.
 
 La app de UCBTools demuestra esta separación con `src/app/services/catalogo.service.ts` y `src/app/pages/home/`. El detalle de uso también está en [`libraries/selector-sede/README.md`](./libraries/selector-sede/README.md). El `index.ts` es el punto de entrada público de la biblioteca en este repositorio. Esta integración es una demostración dentro del repositorio: la publicación del paquete y su nombre de importación para consumidores externos aún deben configurarse. Cuando estén disponibles, las aplicaciones deben consumir la biblioteca publicada, no copiar su implementación. El servidor del servicio debe permitir solicitudes CORS desde el origen del consumidor.
+
+El manual paso a paso para crear bibliotecas standalone o basadas en `NgModule`, exportar su API e importarla en una aplicación está en [`libraries/README.md`](./libraries/README.md).
 
 ## Dirección de dependencias
 
