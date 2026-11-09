@@ -1,0 +1,17 @@
+<div class="selector-sede">
+  <label for="selector-sede">Sede</label>
+
+  @if (cargando) {
+    <p class="mensaje" role="status">Cargando sedes...</p>
+  } @else if (error) {
+    <p class="mensaje error" role="alert">{{ error }}</p>
+    <button type="button" class="reintentar" (click)="cargarSedes()">Reintentar</button>
+  } @else {
+    <select id="selector-sede" (change)="seleccionarSede($event)">
+      <option value="">Selecciona una sede</option>
+      @for (sede of sedes; track sede.idSede) {
+        <option [value]="sede.idSede">{{ sede.sigla }} — {{ sede.nombre }}</option>
+      }
+    </select>
+  }
+</div>

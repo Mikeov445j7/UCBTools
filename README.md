@@ -6,6 +6,10 @@ UCBTools es un proyecto en etapa inicial para construir un framework que facilit
 
 La [Guía de arquitectura y organización de proyectos](./GUIA-ARQUITECTURA.md) define las reglas para distinguir herramientas reutilizables de funcionalidades de negocio y sirve como referencia para UCBTools y los sistemas institucionales que lo consuman.
 
+## Ejemplo de biblioteca
+
+El [Selector de sede](./libraries/selector-sede/README.md) demuestra cómo implementar y consumir una herramienta reutilizable conectada a un servicio institucional.
+
 ## Estado actual
 
 La aplicacion contiene el scaffold inicial de Angular 18. El framework y sus componentes todavia no estan implementados; se espera que la estructura evolucione durante el desarrollo.

@@ -96,6 +96,47 @@ Ejemplos no permitidos:
 
 Estos últimos representan procesos de negocio y deben permanecer en el sistema al que pertenecen.
 
+### Ejemplo: Selector de sede
+
+La primera biblioteca de ejemplo es `libraries/selector-sede/`. Obtiene las sedes del servicio institucional:
+
+```text
+GET https://snc.ucb.edu.bo/snc-back/api/Tramites/getSedes
+```
+
+El servicio devuelve una lista de objetos con `idSede`, `sigla` y `nombre`. La biblioteca comprueba el formato de la respuesta, presenta el estado de carga y permite volver a intentar si la solicitud falla.
+
+Su estructura separa el contrato de datos, el acceso HTTP y la presentación:
+
+```text
+libraries/selector-sede/
+├── index.ts
+├── sede.model.ts
+├── sede.service.ts
+├── selector-sede.component.ts
+├── selector-sede.component.html
+├── selector-sede.component.scss
+├── sede.service.spec.ts
+└── README.md
+```
+
+Para crear una biblioteca nueva:
+
+1. Crea una carpeta con un nombre que identifique la herramienta dentro de `libraries/`.
+2. Separa los modelos, la integración con datos y la interfaz cuando corresponda.
+3. Agrega pruebas para los comportamientos propios de la biblioteca.
+4. Documenta el propósito, la API y la forma de uso en un `README.md` dentro de la biblioteca.
+5. Mantén la biblioteca independiente de reglas de negocio y de aplicaciones consumidoras.
+
+Para incorporar el selector en una aplicación Angular standalone:
+
+1. Configura `provideHttpClient()` en los proveedores de la aplicación.
+2. Importa `SelectorSedeComponent` desde el punto de entrada de la biblioteca en el componente consumidor.
+3. Usa `<ucb-selector-sede (sedeChange)="sede = $event" />` en su plantilla.
+4. Consume el valor emitido como `Sede | null`; el objeto incluye `idSede`, `sigla` y `nombre`.
+
+La app de UCBTools utiliza este componente como demostración en `src/app/app.component.*`. El detalle de uso también está en [`libraries/selector-sede/README.md`](./libraries/selector-sede/README.md). El `index.ts` es el punto de entrada público de la biblioteca en este repositorio. Esta integración es una demostración dentro del repositorio: la publicación del paquete y su nombre de importación para consumidores externos aún deben configurarse. Cuando estén disponibles, las aplicaciones deben consumir la biblioteca publicada, no copiar su implementación. El servidor del servicio debe permitir solicitudes CORS desde el origen del consumidor.
+
 ## Dirección de dependencias
 
 La dirección de dependencia debe ser siempre:
