@@ -6,7 +6,14 @@
       Ejemplo de una herramienta reutilizable: selector de sedes conectado al servicio institucional.
     </p>
 
-    <ucb-selector-sede (sedeChange)="sedeSeleccionada = $event" />
+    <ucb-selector-sede
+      [sedes]="sedes"
+      [sedeSeleccionada]="sedeSeleccionada"
+      [cargando]="cargando"
+      [error]="error"
+      (sedeChange)="sedeSeleccionada = $event"
+      (reintentar)="cargarSedes()"
+    />
 
     @if (sedeSeleccionada; as sede) {
       <p class="selection" aria-live="polite">

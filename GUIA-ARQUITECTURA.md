@@ -104,7 +104,7 @@ La primera biblioteca de ejemplo es `libraries/selector-sede/`. Obtiene las sede
 GET https://snc.ucb.edu.bo/snc-back/api/Tramites/getSedes
 ```
 
-El servicio devuelve una lista de objetos con `idSede`, `sigla` y `nombre`. La biblioteca comprueba el formato de la respuesta, presenta el estado de carga y permite volver a intentar si la solicitud falla.
+El servicio devuelve una lista de objetos con `idSede`, `sigla` y `nombre`. El servicio HTTP y la validación del contrato viven en la biblioteca. El componente expone la selección como presentación; la aplicación consumidora coordina la solicitud, el estado de carga y los reintentos desde su servicio de aplicación y su pantalla.
 
 Su estructura separa el contrato de datos, el acceso HTTP y la presentación:
 
@@ -131,15 +131,17 @@ Para crear una biblioteca nueva:
 Para incorporar el selector en una aplicación Angular standalone:
 
 1. Configura `provideHttpClient()` en los proveedores de la aplicación.
-2. Importa `SelectorSedeComponent` desde el punto de entrada de la biblioteca en el componente consumidor.
-3. Usa `<ucb-selector-sede (sedeChange)="sede = $event" />` en su plantilla.
-4. Consume el valor emitido como `Sede | null`; el objeto incluye `idSede`, `sigla` y `nombre`.
+2. Desde un servicio de dominio en `src/app/services/`, consume el servicio HTTP expuesto por la biblioteca.
+3. En la pantalla, importa `SelectorSedeComponent` desde el punto de entrada de la biblioteca y pásale los datos y estados necesarios.
+4. Maneja `sedeChange` para recibir `Sede | null`; el objeto incluye `idSede`, `sigla` y `nombre`. Maneja `reintentar` para pedir a la pantalla que vuelva a invocar el servicio de aplicación.
 
-La app de UCBTools utiliza este componente como demostración en `src/app/app.component.*`. El detalle de uso también está en [`libraries/selector-sede/README.md`](./libraries/selector-sede/README.md). El `index.ts` es el punto de entrada público de la biblioteca en este repositorio. Esta integración es una demostración dentro del repositorio: la publicación del paquete y su nombre de importación para consumidores externos aún deben configurarse. Cuando estén disponibles, las aplicaciones deben consumir la biblioteca publicada, no copiar su implementación. El servidor del servicio debe permitir solicitudes CORS desde el origen del consumidor.
+`SelectorSedeComponent` es puramente visual: recibe `sedes`, `sedeSeleccionada`, `cargando` y `error`, y emite la sede seleccionada o la solicitud de reintento. No accede directamente a la red. El servicio HTTP de sedes permanece en `libraries/selector-sede/`; no se duplica como servicio de negocio en cada sistema consumidor.
+
+La app de UCBTools demuestra esta separación con `src/app/services/catalogo.service.ts` y `src/app/app.component.*`. El detalle de uso también está en [`libraries/selector-sede/README.md`](./libraries/selector-sede/README.md). El `index.ts` es el punto de entrada público de la biblioteca en este repositorio. Esta integración es una demostración dentro del repositorio: la publicación del paquete y su nombre de importación para consumidores externos aún deben configurarse. Cuando estén disponibles, las aplicaciones deben consumir la biblioteca publicada, no copiar su implementación. El servidor del servicio debe permitir solicitudes CORS desde el origen del consumidor.
 
 ## Dirección de dependencias
 
-La dirección de dependencia debe ser siempre:
+La dirección de dependencia entre aplicaciones institucionales y UCBTools debe ser siempre:
 
 ```text
 Aplicación institucional
@@ -148,6 +150,118 @@ Aplicación institucional
 ```
 
 UCBTools no debe depender de una aplicación ni conocer funcionalidades específicas de un sistema.
+
+## Organización de servicios
+
+### Objetivo
+
+Esta sección define los **servicios de aplicación**, es decir, los servicios propios de cada sistema institucional. Están dirigidos al negocio de esa aplicación y actúan como capa orquestadora entre sus pantallas, su lógica funcional y las herramientas de UCBTools.
+
+No define ni reemplaza los servicios internos que forman parte de una herramienta reutilizable. El servicio que consulta los datos necesarios para `SelectorSedeComponent`, por ejemplo, pertenece a `libraries/selector-sede/`; no es un servicio de negocio de cada aplicación consumidora.
+
+Las reglas de negocio propias permanecen en la aplicación institucional. UCBTools no debe depender de esos servicios ni incorporar reglas exclusivas de un sistema.
+
+### Estructura de la aplicación
+
+Cada aplicación debe tener una única carpeta `services/`, que será el único lugar autorizado para los servicios de aplicación. En una aplicación Angular, la estructura de referencia bajo `src/` es:
+
+```text
+src/
+└── app/
+    ├── pages/
+    ├── components/
+    ├── models/
+    ├── interfaces/
+    ├── services/
+    ├── guards/
+    └── layouts/
+```
+
+Los archivos de arranque y configuración propios de Angular, como `app.component.ts`, `app.config.ts` y `app.routes.ts`, pueden permanecer directamente en `src/app/`.
+
+No se deben crear carpetas `services/` dentro de módulos o dominios funcionales, páginas ni componentes. Los siguientes ejemplos son incorrectos:
+
+```text
+src/app/convenios/services/
+src/app/instituciones/services/
+src/app/pages/convenios/services/
+src/app/components/institucion/services/
+```
+
+La carpeta `helpers/` no es obligatoria. Solo puede existir dentro de `src/app/` cuando contenga funciones auxiliares con un propósito concreto, responsabilidad y uso documentados; no se debe crear vacía ni usar para lógica de negocio que corresponda a un servicio.
+
+### Agrupación por dominio
+
+Los servicios se agrupan por dominio funcional, no por componente visual, módulo ni acción individual. Cada archivo reúne las operaciones de negocio relacionadas con ese dominio y puede coordinar varias herramientas de UCBTools.
+
+Ejemplos de archivos válidos en `src/app/services/`:
+
+- `persona.service.ts`
+- `institucion.service.ts`
+- `documento.service.ts`
+- `reporte.service.ts`
+- `catalogo.service.ts`
+- `usuario.service.ts`
+- `seguridad.service.ts`
+
+No se deben crear archivos de servicio por operación o herramienta:
+
+- `buscar-persona.service.ts`
+- `buscar-docente.service.ts`
+- `buscar-estudiante.service.ts`
+- `buscar-por-ci.service.ts`
+- `generar-pdf.service.ts`
+- `exportar-excel.service.ts`
+
+### Responsabilidades por dominio
+
+Cuando varias operaciones pertenecen al mismo dominio, deben mantenerse en el mismo servicio. Por ejemplo, `persona.service.ts` puede ofrecer `buscarPersona()`, `buscarDocente()`, `buscarEstudiante()`, `buscarPorCI()`, `buscarPorNombre()`, `buscarPorCorreo()` y `obtenerDatosAcademicos()`.
+
+`institucion.service.ts` puede agrupar `buscarInstitucion()`, `buscarUniversidad()`, `buscarPorPais()`, `obtenerConvenios()` y `obtenerContactos()`.
+
+`documento.service.ts` puede agrupar `generarPdf()`, `generarWord()`, `imprimirDocumento()`, `descargarDocumento()` y `obtenerPlantilla()`. La capacidad técnica reutilizable de generar un formato puede delegarse a una herramienta de UCBTools; el servicio de aplicación coordina su uso para el flujo de negocio.
+
+### Responsabilidades y límites
+
+Un servicio de aplicación debe:
+
+- Centralizar operaciones relacionadas con un mismo dominio funcional.
+- Coordinar las llamadas a las APIs que requiere el dominio.
+- Transformar datos para los casos de uso de la aplicación.
+- Orquestar herramientas reutilizables de UCBTools.
+- Exponer métodos claros para que la interfaz consuma las operaciones de negocio.
+
+Un servicio de aplicación no debe:
+
+- Contener lógica visual, implementar vistas o definir estilos.
+- Manipular directamente elementos gráficos o componentes visuales.
+- Crear dependencias circulares con otros servicios.
+- Trasladar a UCBTools reglas propias de la aplicación.
+
+Los servicios propios de una biblioteca de UCBTools se mantienen dentro de esa biblioteca, junto con la capacidad reutilizable que implementan. No se trasladan a `src/app/services/` de cada sistema consumidor. A su vez, un servicio de aplicación no pertenece a `libraries/`, porque conoce y coordina necesidades del negocio de su sistema.
+
+### Dependencias entre pantallas, servicios y herramientas
+
+Las operaciones y los flujos de negocio deben seguir esta dirección:
+
+```text
+Pantalla
+   ↓
+Servicio de aplicación (dominio del negocio)
+   ↓
+Herramientas UCBTools
+```
+
+Para operaciones de negocio, la pantalla consume el servicio de aplicación; este consume las herramientas necesarias. La herramienta nunca depende de la pantalla ni del servicio de aplicación que la utiliza.
+
+Los componentes puramente visuales de UCBTools pueden importarse directamente en una pantalla para presentarlos y enlazar sus entradas y eventos. Por ejemplo, una pantalla puede mostrar `SelectorSedeComponent`. Este uso de presentación no cambia la ubicación del servicio interno de la biblioteca ni permite omitir el servicio de aplicación al coordinar un flujo de negocio.
+
+```text
+Pantalla ──→ componente visual UCBTools (presentación)
+Pantalla ──→ servicio de aplicación ──→ herramientas/servicios internos de UCBTools (operaciones)
+```
+
+> Una herramienta resuelve una capacidad técnica. Un servicio agrupa herramientas relacionadas para resolver una necesidad funcional.
 
 ## Identificación de una herramienta
 
@@ -184,14 +298,13 @@ La migración debe preservar la separación entre la herramienta genérica y las
 No se deben crear carpetas genéricas sin un propósito y una responsabilidad claramente definidos, como:
 
 - `Utils`
-- `Helpers`
 - `Misc`
 - `Common`
 - `Varios`
 - `Otros`
 - `Temporal`
 
-Cada elemento debe ubicarse en una carpeta cuyo nombre y responsabilidad sean explícitos.
+En las aplicaciones, `helpers/` solo se permite para funciones auxiliares de propósito concreto y documentado, según la estructura de referencia de esta guía. No se debe usar como carpeta genérica para lógica que corresponda a un servicio de dominio, una biblioteca de UCBTools u otra ubicación definida.
 
 ## Responsabilidades de los proyectos institucionales
 

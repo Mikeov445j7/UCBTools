@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { SedeService } from '../../libraries/selector-sede/sede.service';
+import { CatalogoService } from './services/catalogo.service';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -9,8 +9,11 @@ describe('AppComponent', () => {
       imports: [AppComponent],
       providers: [
         {
-          provide: SedeService,
-          useValue: { obtenerSedes: () => of([]) },
+          provide: CatalogoService,
+          useValue: {
+            obtenerSedes: () =>
+              of([{ idSede: 20, sigla: 'CBB', nombre: 'SEDE COCHABAMBA' }]),
+          },
         },
       ],
     }).compileComponents();
@@ -34,5 +37,20 @@ describe('AppComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('UCBTools');
     expect(compiled.querySelector('ucb-selector-sede')).not.toBeNull();
+    expect(compiled.querySelector('option[value="20"]')?.textContent).toContain('SEDE COCHABAMBA');
+  });
+
+  it('should display the selected sede', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const select = fixture.nativeElement.querySelector('select') as HTMLSelectElement;
+
+    select.value = '20';
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.selection')?.textContent).toContain(
+      'SEDE COCHABAMBA',
+    );
   });
 });

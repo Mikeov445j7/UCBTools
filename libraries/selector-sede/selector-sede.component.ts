@@ -1,14 +1,5 @@
-import { isPlatformBrowser } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Sede } from './sede.model';
-import { SedeService } from './sede.service';
 
 @Component({
   selector: 'ucb-selector-sede',
@@ -16,44 +7,19 @@ import { SedeService } from './sede.service';
   templateUrl: './selector-sede.component.html',
   styleUrl: './selector-sede.component.scss',
 })
-export class SelectorSedeComponent implements OnInit {
+export class SelectorSedeComponent {
+  @Input() sedes: Sede[] = [];
+  @Input() sedeSeleccionada: Sede | null = null;
+  @Input() cargando = false;
+  @Input() error: string | null = null;
+
   @Output() sedeChange = new EventEmitter<Sede | null>();
-
-  sedes: Sede[] = [];
-  sedeSeleccionada: Sede | null = null;
-  cargando = false;
-  error: string | null = null;
-
-  constructor(
-    private readonly sedeService: SedeService,
-    @Inject(PLATFORM_ID) private readonly platformId: object,
-  ) {}
-
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.cargarSedes();
-    }
-  }
-
-  cargarSedes(): void {
-    this.cargando = true;
-    this.error = null;
-
-    this.sedeService.obtenerSedes().subscribe({
-      next: (sedes) => {
-        this.sedes = sedes;
-        this.cargando = false;
-      },
-      error: () => {
-        this.error = 'No se pudieron cargar las sedes. Intenta nuevamente.';
-        this.cargando = false;
-      },
-    });
-  }
+  @Output() reintentar = new EventEmitter<void>();
 
   seleccionarSede(event: Event): void {
-    const idSeleccionado = Number((event.target as HTMLSelectElement).value);
-    this.sedeSeleccionada = this.sedes.find((sede) => sede.idSede === idSeleccionado) ?? null;
-    this.sedeChange.emit(this.sedeSeleccionada);
+    const valorSeleccionado = (event.target as HTMLSelectElement).value;
+    const idSeleccionado = valorSeleccionado ? Number(valorSeleccionado) : null;
+    const sede = this.sedes.find((item) => item.idSede === idSeleccionado) ?? null;
+    this.sedeChange.emit(sede);
   }
 }
