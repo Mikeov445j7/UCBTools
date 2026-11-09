@@ -1,0 +1,25 @@
+<main class="home">
+  <section class="home__hero">
+    <p class="home__eyebrow">UCBVANTools</p>
+    <h1>Base de proyecto institucional</h1>
+    <p class="home__description">
+      Ejemplo de librería reutilizable para seleccionar sedes desde el endpoint institucional.
+    </p>
+  </section>
+
+  <ucb-selector-sede
+    [sedes]="sedes"
+    [sedeSeleccionada]="sedeSeleccionada"
+    [cargando]="cargando"
+    [error]="error"
+    (sedeChange)="manejarCambioSede($event)"
+    (reintentar)="cargarSedes()"
+  ></ucb-selector-sede>
+
+  <section *ngIf="sedeSeleccionada" class="home__selection">
+    <h2>Sede seleccionada</h2>
+    <p>
+      <strong>{{ sedeSeleccionada.sigla }}</strong> - {{ sedeSeleccionada.nombre }}
+    </p>
+  </section>
+</main>

@@ -104,7 +104,7 @@ La primera biblioteca de ejemplo es `libraries/selector-sede/`. Obtiene las sede
 GET https://snc.ucb.edu.bo/snc-back/api/Tramites/getSedes
 ```
 
-El servicio devuelve una lista de objetos con `idSede`, `sigla` y `nombre`. El servicio HTTP y la validación del contrato viven en la biblioteca. El componente expone la selección como presentación; la aplicación consumidora coordina la solicitud, el estado de carga y los reintentos desde su servicio de aplicación y su pantalla.
+El servicio devuelve una lista de objetos con `idSede`, `sigla` y `nombre`. El modelo TypeScript, el servicio HTTP y el tipado de la respuesta viven en la biblioteca. El componente standalone expone la selección como presentación; la aplicación consumidora coordina la solicitud, el estado de carga y los reintentos desde su servicio de aplicación y su pantalla.
 
 Su estructura separa el contrato de datos, el acceso HTTP y la presentación:
 
@@ -116,9 +116,11 @@ libraries/selector-sede/
 ├── selector-sede.component.ts
 ├── selector-sede.component.html
 ├── selector-sede.component.scss
-├── sede.service.spec.ts
+├── selector-sede.component.spec.ts
 └── README.md
 ```
+
+En Angular 18 se prefieren componentes standalone para las herramientas nuevas. Cada biblioteca no necesita su propio `NgModule`: se importa el componente standalone directamente. Se agrega un módulo solo cuando un requisito de compatibilidad lo justifique. El `index.ts` sirve como punto de entrada público y exporta únicamente la API que los consumidores deben usar.
 
 Para crear una biblioteca nueva:
 
@@ -128,16 +130,16 @@ Para crear una biblioteca nueva:
 4. Documenta el propósito, la API y la forma de uso en un `README.md` dentro de la biblioteca.
 5. Mantén la biblioteca independiente de reglas de negocio y de aplicaciones consumidoras.
 
-Para incorporar el selector en una aplicación Angular standalone:
+Para incorporar el selector en una aplicación Angular:
 
-1. Configura `provideHttpClient()` en los proveedores de la aplicación.
+1. Configura el cliente HTTP (`provideHttpClient()` para una aplicación standalone o `HttpClientModule` para una aplicación basada en `NgModule`).
 2. Desde un servicio de dominio en `src/app/services/`, consume el servicio HTTP expuesto por la biblioteca.
-3. En la pantalla, importa `SelectorSedeComponent` desde el punto de entrada de la biblioteca y pásale los datos y estados necesarios.
+3. En el contexto que declara la pantalla, importa `SelectorSedeComponent` desde el punto de entrada de la biblioteca y pásale los datos y estados necesarios.
 4. Maneja `sedeChange` para recibir `Sede | null`; el objeto incluye `idSede`, `sigla` y `nombre`. Maneja `reintentar` para pedir a la pantalla que vuelva a invocar el servicio de aplicación.
 
 `SelectorSedeComponent` es puramente visual: recibe `sedes`, `sedeSeleccionada`, `cargando` y `error`, y emite la sede seleccionada o la solicitud de reintento. No accede directamente a la red. El servicio HTTP de sedes permanece en `libraries/selector-sede/`; no se duplica como servicio de negocio en cada sistema consumidor.
 
-La app de UCBTools demuestra esta separación con `src/app/services/catalogo.service.ts` y `src/app/app.component.*`. El detalle de uso también está en [`libraries/selector-sede/README.md`](./libraries/selector-sede/README.md). El `index.ts` es el punto de entrada público de la biblioteca en este repositorio. Esta integración es una demostración dentro del repositorio: la publicación del paquete y su nombre de importación para consumidores externos aún deben configurarse. Cuando estén disponibles, las aplicaciones deben consumir la biblioteca publicada, no copiar su implementación. El servidor del servicio debe permitir solicitudes CORS desde el origen del consumidor.
+La app de UCBTools demuestra esta separación con `src/app/services/catalogo.service.ts` y `src/app/pages/home/`. El detalle de uso también está en [`libraries/selector-sede/README.md`](./libraries/selector-sede/README.md). El `index.ts` es el punto de entrada público de la biblioteca en este repositorio. Esta integración es una demostración dentro del repositorio: la publicación del paquete y su nombre de importación para consumidores externos aún deben configurarse. Cuando estén disponibles, las aplicaciones deben consumir la biblioteca publicada, no copiar su implementación. El servidor del servicio debe permitir solicitudes CORS desde el origen del consumidor.
 
 ## Dirección de dependencias
 

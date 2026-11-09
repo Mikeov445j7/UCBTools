@@ -1,0 +1,127 @@
+.selector-sede {
+  display: block;
+  max-width: 720px;
+  margin: 0 auto;
+  background: #f8fafc;
+  border: 1px solid #dfe7f1;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+}
+
+.selector-sede__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.selector-sede__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0f172a;
+}
+
+.selector-sede__status {
+  background: #e0f2fe;
+  color: #075985;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.selector-sede__loading,
+.selector-sede__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 72px;
+  color: #0f172a;
+}
+
+.selector-sede__spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.selector-sede__error {
+  flex-direction: column;
+  align-items: flex-start;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.selector-sede__error p {
+  margin: 0;
+  color: #991b1b;
+}
+
+.selector-sede__retry {
+  border: none;
+  background: #dc2626;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.selector-sede__options {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.selector-sede__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: white;
+  color: #0f172a;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.selector-sede__option:hover {
+  transform: translateY(-1px);
+  border-color: #93c5fd;
+}
+
+.selector-sede__option.selected {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.selector-sede__sigla {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  padding: 0.3rem 0.55rem;
+  border-radius: 10px;
+  background: #e2e8f0;
+  font-weight: 700;
+}
+
+.selector-sede__nombre {
+  flex: 1;
+  font-weight: 500;
+}

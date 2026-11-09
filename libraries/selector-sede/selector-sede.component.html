@@ -1,0 +1,40 @@
+<section class="selector-sede" aria-live="polite">
+  <header class="selector-sede__header">
+    <h2>Seleccione una sede</h2>
+    <span class="selector-sede__status">{{ cargando ? 'Cargando...' : 'Disponible' }}</span>
+  </header>
+
+  <div *ngIf="error" class="selector-sede__error">
+    <p>{{ error }}</p>
+    <button type="button" class="selector-sede__retry" (click)="intentarOtraVez()">
+      Reintentar
+    </button>
+  </div>
+
+  <div *ngIf="!error && cargando" class="selector-sede__loading">
+    <div class="selector-sede__spinner" aria-hidden="true"></div>
+    <span>Cargando sedes...</span>
+  </div>
+
+  <div *ngIf="!error && !cargando" class="selector-sede__options">
+    <button
+      type="button"
+      class="selector-sede__option"
+      [class.selected]="!sedeSeleccionada"
+      (click)="seleccionarSede(null)"
+    >
+      Sin selección
+    </button>
+
+    <button
+      *ngFor="let sede of sedes"
+      type="button"
+      class="selector-sede__option"
+      [class.selected]="sedeSeleccionada?.idSede === sede.idSede"
+      (click)="seleccionarSede(sede)"
+    >
+      <span class="selector-sede__sigla">{{ sede.sigla }}</span>
+      <span class="selector-sede__nombre">{{ sede.nombre }}</span>
+    </button>
+  </div>
+</section>

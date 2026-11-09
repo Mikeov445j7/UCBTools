@@ -1,0 +1,52 @@
+.home {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.home__hero {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.home__eyebrow {
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.home__hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #0f172a;
+}
+
+.home__description {
+  max-width: 640px;
+  margin: 0.75rem auto 0;
+  color: #475569;
+  font-size: 1.05rem;
+}
+
+.home__selection {
+  max-width: 720px;
+  margin: 1.5rem auto 0;
+  background: #f8fafc;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+
+.home__selection h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.home__selection p {
+  margin: 0;
+  color: #1e293b;
+}
