@@ -8,19 +8,23 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { TestsModule } from './tests/tests.module';
+import { TestMikeComponent } from './testMike/testMike.component';
+import { PruebasComponent } from './tests/tests-leonardo/pruebas/pruebas.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-  ],
+    TestMikeComponent,
+      PruebasComponent
+   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     SelectorSedeComponent,
-    TestsModule,
+    TestsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

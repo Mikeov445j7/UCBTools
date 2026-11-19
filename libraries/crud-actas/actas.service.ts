@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { ActaResumen, ActaDetalle } from './acta.model';
 
 @Injectable({
@@ -17,9 +16,7 @@ export class ActasService {
    */
   getEstudianteActas(ci: string): Observable<ActaResumen[]> {
     const url = `${this.baseUrl}/Estudiante/GetEstudianteActas?ci=${encodeURIComponent(ci.trim())}`;
-    return this.http.get<ActaResumen[]>(url).pipe(
-      tap(res => console.log('[GET ESTUDIANTE ACTAS SUCCESS] Respuesta:', res))
-    );
+    return this.http.get<ActaResumen[]>(url);
   }
 
   /**
@@ -27,8 +24,6 @@ export class ActasService {
    */
   getActaDetalle(idActa: number): Observable<ActaDetalle[]> {
     const url = `${this.baseUrl}/Actas/GetActa?idActa=${idActa}`;
-    return this.http.get<ActaDetalle[]>(url).pipe(
-      tap(res => console.log('[GET ACTA DETALLE SUCCESS] Respuesta:', res))
-    );
+    return this.http.get<ActaDetalle[]>(url);
   }
 }

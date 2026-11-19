@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { ActualizarTitulacionPayload, TramiteCompletoDto } from './titulacion.model';
 
 @Injectable({
@@ -17,19 +16,14 @@ export class TitulacionesService {
    */
   getTramitesPorCi(ci: string): Observable<TramiteCompletoDto[]> {
     const url = `${this.baseUrl}/GetTramiteCompletoCi?ci=${encodeURIComponent(ci.trim())}`;
-    return this.http.get<TramiteCompletoDto[]>(url).pipe(
-      tap(res => console.log('[GET TITULACIONES SUCCESS] Respuesta:', res))
-    );
+    return this.http.get<TramiteCompletoDto[]>(url);
   }
 
   /**
-   * Envía o simula la actualización de datos de titulación
+   * Actualiza los datos de titulación.
    */
   actualizarTitulacion(payload: ActualizarTitulacionPayload): Observable<unknown> {
     const url = `${this.baseUrl}/UpdTramite`;
-    console.log('[UPD TITULACION] Disparando actualización a:', url, 'Payload:', payload);
-
-    // Simulación institucional hasta que backend despliegue el endpoint de guardado:
-    return of({ ok: true, mensaje: 'Simulación de actualización exitosa', data: payload }).pipe(delay(300));
+    return this.http.post<unknown>(url, payload);
   }
 }

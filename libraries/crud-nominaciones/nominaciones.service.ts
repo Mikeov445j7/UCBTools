@@ -36,14 +36,12 @@ export class NominacionesService {
   }
 
   updNominacion(datosActualizados: unknown): Observable<unknown> {
-    console.log('[UPD NOMINACION] Disparando API Update con:', datosActualizados);
     return this.http.post<unknown>(`${this.baseUrl}/UPDNominacion`, datosActualizados);
   }
 
   delNominacion(id: number | string): Observable<unknown> {
     const url = `${this.baseUrl}/DelNominacion?idNominacion=${id}`;
     const body = { id };
-    console.log(`[DEL NOMINACION] Disparando API Eliminar a: ${url}`, 'Body:', body);
     return this.http.post<unknown>(url, body);
   }
 }
