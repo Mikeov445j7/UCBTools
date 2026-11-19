@@ -1,0 +1,83 @@
+<div class="contenedor-autorizaciones">
+
+  <!-- CABECERA -->
+  <div class="barra-superior">
+    <div class="textos-titulo">
+      <h2 class="titulo-pagina">Gestión de Autorizaciones</h2>
+      <p class="subtitulo-pagina">Asigna y administra roles, permisos y etapas a usuarios y docentes UCB.</p>
+    </div>
+
+    <div class="acciones-header">
+      <button
+        *ngIf="vistaActual === 'buscar'"
+        type="button"
+        class="btn-nuevo"
+        (click)="cambiarVista('crear')">
+        ➕ Nueva Autorización
+      </button>
+
+      <button
+        *ngIf="vistaActual !== 'buscar'"
+        type="button"
+        class="btn-volver"
+        (click)="cambiarVista('buscar')">
+        ← Volver a Búsqueda
+      </button>
+    </div>
+  </div>
+
+  <!-- ALERTA / MENSAJE -->
+  <div class="alerta" *ngIf="mensajeAlerta" [class.alerta-exito]="mensajeAlerta.includes('✅')">
+    <span>{{ mensajeAlerta }}</span>
+  </div>
+
+  <!-- VISTA BUSCAR -->
+  <div *ngIf="vistaActual === 'buscar'" class="vista-buscar">
+    <div class="buscador-container">
+      <label class="label-buscador">Buscar Usuario / Docente por nombre o carnet:</label>
+      <ucb-combobox-usuarios (usuarioSeleccionado)="recibirUsuario($event)"></ucb-combobox-usuarios>
+    </div>
+
+    <div class="estado-carga" *ngIf="buscando">
+      <p>⏳ Consultando autorizaciones del usuario seleccionado...</p>
+    </div>
+
+    <!-- LISTADO DE TARJETAS -->
+    <div class="lista-autorizaciones" *ngIf="!buscando && autorizacionesEncontradas.length > 0">
+      <div class="card-wrapper" *ngFor="let item of autorizacionesEncontradas">
+        <ucb-tarjeta-perfil
+          [persona]="item.raw"
+          [secciones]="item.secciones">
+        </ucb-tarjeta-perfil>
+
+        <div class="acciones-tarjeta">
+          <button type="button" class="btn-accion btn-editar" (click)="prepararEdicion(item.raw)">
+            ✏️ Editar
+          </button>
+          <button type="button" class="btn-accion btn-eliminar" (click)="eliminarAPI(item.raw['id'])">
+            🗑️ Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA CREAR -->
+  <div *ngIf="vistaActual === 'crear'" class="vista-crear">
+    <ucb-formulario-autorizacion
+      [idPersonaDefecto]="idPersonaActual"
+      (guardar)="guardarAPI($event)"
+      (cancelar)="cambiarVista('buscar')">
+    </ucb-formulario-autorizacion>
+  </div>
+
+  <!-- VISTA EDITAR -->
+  <div *ngIf="vistaActual === 'editar'" class="vista-editar">
+    <ucb-formulario-autorizacion
+      [autorizacionAEditar]="autorizacionAEditarTemporal"
+      (guardar)="actualizarAPI($event)"
+      (cancelar)="cambiarVista('buscar')">
+    </ucb-formulario-autorizacion>
+  </div>
+
+</div>

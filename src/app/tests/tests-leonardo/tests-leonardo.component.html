@@ -1,169 +1,492 @@
-<main class="tests-leonardo">
-  <header class="tests-leonardo__header">
-    <div>
-      <p class="tests-leonardo__eyebrow">Banco de Pruebas · Leonardo</p>
-      <h1>Pruebas de Componentes Migrados</h1>
-      <p class="tests-leonardo__subtitle">
-        Validación de las librerías <code>buscador-personas</code>, <code>tarjeta-perfil</code> y
-        <code>tarjeta-seleccion</code> en Angular 18 con arquitectura <code>NgModule</code>.
-      </p>
+<div class="suite-pruebas-material">
+
+  <!-- ENCABEZADO INSTITUCIONAL CON ANGULAR MATERIAL -->
+  <mat-card class="cabecera-suite mat-elevation-z3">
+    <div class="cabecera-contenido">
+      <div class="icono-suite">
+        <mat-icon color="primary" class="icono-grande">science</mat-icon>
+      </div>
+      <div class="textos-suite">
+        <h1 class="titulo-suite">Suite de Pruebas Institucionales · Tests Leonardo</h1>
+        <p class="subtitulo-suite">
+          Harness interactivo Angular Material para validación de librerías migradas a <strong>Angular 18</strong>,
+          arquitectura <strong>NgModule (standalone: false)</strong> y prefijo estandarizado <strong>ucb-*</strong>.
+        </p>
+      </div>
+      <div class="chips-suite">
+        <mat-chip-set>
+          <mat-chip highlighted color="primary">Angular 18</mat-chip>
+          <mat-chip>NgModule</mat-chip>
+          <mat-chip>Prefix: ucb-*</mat-chip>
+          <mat-chip color="accent">Material Theme</mat-chip>
+        </mat-chip-set>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- PANELES DE LIBRERÍAS Y CRUDS MEDIANTE MAT-TAB-GROUP -->
+  <mat-tab-group class="tabs-suite mat-elevation-z2" mat-stretch-tabs="false" animationDuration="250ms">
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: BUSCADORES DE PERSONAS (USUARIOS / ESTUDIANTES) -->
+    <!-- ============================================================ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">person_search</mat-icon>
+        Buscadores de Personas
+      </ng-template>
+
+      <div class="tab-body-container">
+        
+        <!-- Documentación de Contrato: Buscadores -->
+        <mat-card class="card-documentacion mat-elevation-z1">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">code</mat-icon>
+            <mat-card-title>Contrato de Integración: BuscadorPersonasModule</mat-card-title>
+            <mat-card-subtitle>libraries/buscador-personas · Selectores: ucb-combobox-usuarios, ucb-combobox-estudiantes</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-contratos">
+              <div class="col-contrato">
+                <h4>📥 Entradas (&#64;Input)</h4>
+                <ul>
+                  <li><code>placeholder: string</code> — Texto inicial en el campo de búsqueda.</li>
+                  <li><code>cargando: boolean</code> — Indicador de spinner mientras la API consulta.</li>
+                  <li><code>error: string | null</code> — Mensaje de alerta en caso de falla de red.</li>
+                  <li><code>resultados: T[]</code> — Lista de coincidencias retornadas para desplegar.</li>
+                </ul>
+              </div>
+              <div class="col-contrato">
+                <h4>📤 Salidas (&#64;Output)</h4>
+                <ul>
+                  <li><code>terminoBuscado: EventEmitter&lt;string&gt;</code> — Emite el texto tipeado con debounce de 300ms.</li>
+                  <li><code>usuarioSeleccionado: EventEmitter&lt;PersonaBusqueda&gt;</code> — Emite el usuario/docente elegido.</li>
+                  <li><code>estudianteSeleccionado: EventEmitter&lt;EstudianteCarrera&gt;</code> — Emite el estudiante elegido por C.I.</li>
+                </ul>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- BUSCADOR 1: DOCENTES / USUARIOS -->
+        <mat-card class="card-ejecucion mat-elevation-z2">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="accent">badge</mat-icon>
+            <mat-card-title>1. Buscador de Docentes y Usuarios Administrativos</mat-card-title>
+            <mat-card-subtitle>Selector: <code>&lt;ucb-combobox-usuarios&gt;</code> · Endpoint: <code>Autoridades/GetPersona?busq=...</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="seccion-buscador-vertical">
+              <ucb-combobox-usuarios
+                placeholder="Busca por apellido o nombre (ej. OROZ, PEREZ, SILVA)..."
+                [cargando]="cargandoUsuarios"
+                [error]="errorUsuarios"
+                [resultados]="resultadosUsuarios"
+                (terminoBuscado)="buscarUsuarios($event)"
+                (usuarioSeleccionado)="seleccionarUsuario($event)">
+              </ucb-combobox-usuarios>
+
+              <div *ngIf="cargandoUsuarios" class="estado-en-linea">
+                <mat-icon class="spin-icon">autorenew</mat-icon>
+                <span>Consultando docentes en el servidor central...</span>
+              </div>
+
+              <div *ngIf="usuarioSeleccionado" class="preview-seleccion fade-in">
+                <ucb-tarjeta-perfil
+                  [persona]="usuarioSeleccionado"
+                  [detalles]="detallesUsuario">
+                </ucb-tarjeta-perfil>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- BUSCADOR 2: ESTUDIANTES POR CI -->
+        <mat-card class="card-ejecucion mat-elevation-z2">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="accent">school</mat-icon>
+            <mat-card-title>2. Buscador de Estudiantes por C.I.</mat-card-title>
+            <mat-card-subtitle>Selector: <code>&lt;ucb-combobox-estudiantes&gt;</code> · Endpoint: <code>Estudiante/GetEstudianteCarrera?ci=...</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="seccion-buscador-vertical">
+              <ucb-combobox-estudiantes
+                placeholder="Ingresa C.I. (ej. 12603800, 7269100, 4839201)..."
+                [cargando]="cargandoEstudiantes"
+                [error]="errorEstudiantes"
+                [resultados]="resultadosEstudiantes"
+                (terminoBuscado)="buscarEstudiantes($event)"
+                (estudianteSeleccionado)="seleccionarEstudiante($event)">
+              </ucb-combobox-estudiantes>
+
+              <div *ngIf="cargandoEstudiantes" class="estado-en-linea">
+                <mat-icon class="spin-icon">autorenew</mat-icon>
+                <span>Consultando estudiante por número de documento...</span>
+              </div>
+
+              <!-- Expediente completo dinámico -->
+              <div *ngIf="cargandoCompleto" class="estado-en-linea">
+                <mat-icon class="spin-icon">download</mat-icon>
+                <span>Descargando expediente académico completo (GetEstudianteDatosCompletosConTodo)...</span>
+              </div>
+
+              <div *ngIf="estudianteCompleto" class="preview-seleccion fade-in">
+                <ucb-tarjeta-perfil
+                  [persona]="estudianteCompleto"
+                  [secciones]="seccionesEstudianteCompleto">
+                </ucb-tarjeta-perfil>
+              </div>
+
+              <div *ngIf="!estudianteCompleto && estudianteSeleccionado" class="preview-seleccion fade-in">
+                <ucb-tarjeta-perfil
+                  [persona]="estudianteSeleccionado"
+                  [detalles]="detallesEstudianteSimple">
+                </ucb-tarjeta-perfil>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: TARJETAS (PERFIL Y SELECCIÓN) -->
+    <!-- ============================================================ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">style</mat-icon>
+        Tarjetas Reutilizables
+      </ng-template>
+
+      <div class="tab-body-container">
+        
+        <!-- Documentación: Tarjeta Perfil -->
+        <mat-card class="card-documentacion mat-elevation-z1">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">credit_card</mat-icon>
+            <mat-card-title>Contrato: TarjetaPerfilModule</mat-card-title>
+            <mat-card-subtitle>libraries/tarjeta-perfil · Selector: <code>&lt;ucb-tarjeta-perfil&gt;</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-contratos">
+              <div class="col-contrato">
+                <h4>📥 Entradas (&#64;Input)</h4>
+                <ul>
+                  <li><code>persona: PersonaPerfil | Record&lt;string, unknown&gt; | null</code> — Datos nominales de cabecera.</li>
+                  <li><code>secciones: TarjetaSeccion[]</code> — Bloques temáticos de datos con título e icono opcional.</li>
+                  <li><code>detalles: TarjetaDetalle[]</code> — Modo simple sin secciones (lista directa de pares clave-valor).</li>
+                </ul>
+              </div>
+              <div class="col-contrato">
+                <h4>💡 Comportamiento Institucional</h4>
+                <ul>
+                  <li>Si <code>tieneDato === false</code>, resalta el campo con badge rojo de "Dato faltante".</li>
+                  <li>Detecta automáticamente si la persona es Estudiante (según <code>nombreCarrera</code>) o Docente/Personal.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="toolbar-demo">
+              <span>Alternar modo de prueba:</span>
+              <button mat-stroked-button [color]="modoPerfilDemo === 'completo' ? 'primary' : ''" (click)="setModoPerfilDemo('completo')">
+                Perfil Completo
+              </button>
+              <button mat-stroked-button [color]="modoPerfilDemo === 'incompleto' ? 'warn' : ''" (click)="setModoPerfilDemo('incompleto')">
+                Perfil con Alertas de Faltantes
+              </button>
+            </div>
+
+            <div class="demo-tarjeta-perfil-render fade-in">
+              <ucb-tarjeta-perfil
+                *ngIf="modoPerfilDemo === 'completo'"
+                [persona]="personaDemoCompleta"
+                [secciones]="seccionesDemoCompleta">
+              </ucb-tarjeta-perfil>
+
+              <ucb-tarjeta-perfil
+                *ngIf="modoPerfilDemo === 'incompleto'"
+                [persona]="personaDemoIncompleta"
+                [detalles]="detallesDemoIncompleto">
+              </ucb-tarjeta-perfil>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Documentación: Tarjeta Selección -->
+        <mat-card class="card-documentacion mat-elevation-z1">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">view_carousel</mat-icon>
+            <mat-card-title>Contrato: TarjetaSeleccionModule</mat-card-title>
+            <mat-card-subtitle>libraries/tarjeta-seleccion · Selector: <code>&lt;ucb-tarjeta-seleccion&gt;</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-contratos">
+              <div class="col-contrato">
+                <h4>📥 Entradas (&#64;Input)</h4>
+                <ul>
+                  <li><code>seleccionada: boolean</code> — Aplica ribbon dorado y borde azul institucional.</li>
+                  <li><code>inactiva: boolean</code> — Aplica opacidad del 50% cuando otra tarjeta está activa.</li>
+                  <li><code>titulo: string</code>, <code>subtitulo: string</code> — Cabeceras de la tarjeta.</li>
+                  <li><code>tagIzquierdo: string</code>, <code>tagDerecho: string</code> — Chips superiores.</li>
+                  <li><code>badgeDerecha: string</code>, <code>tipoBadge: 'verde' | 'amarillo' | 'gris' | 'azul'</code>.</li>
+                </ul>
+              </div>
+              <div class="col-contrato">
+                <h4>📤 Salidas (&#64;Output)</h4>
+                <ul>
+                  <li><code>seleccionar: EventEmitter&lt;void&gt;</code> — Disparado al hacer clic en cualquier parte de la tarjeta o presionar Enter.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="grid-tarjetas-seleccion-demo">
+              <ucb-tarjeta-seleccion
+                *ngFor="let t of tarjetasDemo; let i = index"
+                [seleccionada]="indiceTarjetaSeleccionada === i"
+                [inactiva]="indiceTarjetaSeleccionada !== null && indiceTarjetaSeleccionada !== i"
+                textoCinta="✓ SELECCIONADA"
+                [tagIzquierdo]="t.tagIzquierdo"
+                [tagDerecho]="t.tagDerecho"
+                [titulo]="t.titulo"
+                [subtitulo]="t.subtitulo"
+                [subtituloCursiva]="t.subtituloCursiva"
+                [metaPrincipalEtiqueta]="t.metaPrincipalEtiqueta"
+                [metaPrincipalValor]="t.metaPrincipalValor"
+                [metaSecundarioIzquierda]="t.metaSecundarioIzquierda"
+                [badgeDerecha]="t.badgeDerecha"
+                [tipoBadge]="t.tipoBadge"
+                (seleccionar)="seleccionarTarjetaDemo(t, i)">
+              </ucb-tarjeta-seleccion>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: CRUD ACTAS -->
+    <!-- ============================================================ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">description</mat-icon>
+        CRUD Actas
+      </ng-template>
+
+      <div class="tab-body-container">
+        <mat-card class="card-documentacion mat-elevation-z1">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">integration_instructions</mat-icon>
+            <mat-card-title>Módulo Institucional: CrudActasModule</mat-card-title>
+            <mat-card-subtitle>libraries/crud-actas · Selector: <code>&lt;ucb-gestion-actas&gt;</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-contratos">
+              <div class="col-contrato">
+                <h4>🌐 APIs Consumidas</h4>
+                <ul>
+                  <li><code>Estudiante/GetEstudianteActas?ci=...</code> — Retorna la lista de actas y defensas asociadas.</li>
+                  <li><code>Actas/GetActa?idActa=...</code> — Retorna el detalle del acta, tribunales examinadores, tutor y calificación.</li>
+                </ul>
+              </div>
+              <div class="col-contrato">
+                <h4>🧩 Componentes Anidados</h4>
+                <ul>
+                  <li><code>ucb-combobox-estudiantes</code> — Autocompletado de estudiante por C.I.</li>
+                  <li><code>ucb-tarjeta-seleccion</code> — Listado de actas en tarjetas seleccionables.</li>
+                  <li><code>ucb-tarjeta-perfil</code> — Expediente completo del acta seleccionada con modo split-screen.</li>
+                </ul>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- COMPONENTE EN EJECUCIÓN -->
+        <div class="contenedor-crud-ejecucion mat-elevation-z2">
+          <ucb-gestion-actas></ucb-gestion-actas>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- ============================================================ -->
+    <!-- TAB 4: CRUD NOMINACIONES -->
+    <!-- ============================================================ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">military_tech</mat-icon>
+        CRUD Nominaciones
+      </ng-template>
+
+      <div class="tab-body-container">
+        <mat-card class="card-documentacion mat-elevation-z1">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">integration_instructions</mat-icon>
+            <mat-card-title>Módulo Institucional: CrudNominacionesModule</mat-card-title>
+            <mat-card-subtitle>libraries/crud-nominaciones · Selector: <code>&lt;ucb-gestion-nominaciones&gt;</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-contratos">
+              <div class="col-contrato">
+                <h4>🌐 APIs Consumidas (8 Endpoints)</h4>
+                <ul>
+                  <li><code>GetAllNominacionesTitulo</code> & <code>GetNominacionesTitulo?id=...</code></li>
+                  <li><code>GetNominacion?idSubDepto=...&sexo=...</code></li>
+                  <li><code>GetNominacionesSubdepto?idSubDepto=...</code></li>
+                  <li><code>GetNominacionesSede?idSede=...</code></li>
+                  <li><code>AddNominacion</code> (POST), <code>UPDNominacion</code> (POST), <code>DelNominacion?idNominacion=...</code> (POST)</li>
+                </ul>
+              </div>
+              <div class="col-contrato">
+                <h4>🧩 Componentes y Funcionalidades</h4>
+                <ul>
+                  <li><code>ucb-formulario-nominacion</code> — Formulario reactivo para alta y modificación de nominaciones.</li>
+                  <li><code>ucb-tarjeta-perfil</code> — Visualización de datos de títulos, registro y vínculos académicos.</li>
+                  <li>Flujo de navegación en vistas: <code>buscar | crear | editar</code>.</li>
+                </ul>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- COMPONENTE EN EJECUCIÓN -->
+        <div class="contenedor-crud-ejecucion mat-elevation-z2">
+          <ucb-gestion-nominaciones></ucb-gestion-nominaciones>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- ============================================================ -->
+    <!-- TAB 5: CRUD TITULACIONES -->
+    <!-- ============================================================ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">workspace_premium</mat-icon>
+        CRUD Titulaciones
+      </ng-template>
+
+      <div class="tab-body-container">
+        <mat-card class="card-documentacion mat-elevation-z1">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">integration_instructions</mat-icon>
+            <mat-card-title>Módulo Institucional: CrudTitulacionesModule</mat-card-title>
+            <mat-card-subtitle>libraries/crud-titulaciones · Selector: <code>&lt;ucb-gestion-titulaciones&gt;</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-contratos">
+              <div class="col-contrato">
+                <h4>🌐 APIs Consumidas</h4>
+                <ul>
+                  <li><code>Tramites/GetTramiteCompletoCi?ci=...</code> — Carga el expediente completo de trámites de titulación.</li>
+                  <li><code>Tramites/UpdTramite</code> — Actualización en línea de parámetros académicos y auditoría.</li>
+                </ul>
+              </div>
+              <div class="col-contrato">
+                <h4>🧩 Componentes y Funcionalidades</h4>
+                <ul>
+                  <li><code>ucb-tarjeta-editable-titulacion</code> — Tarjeta dividida entre perfil estático y formulario reactivo de auditoría.</li>
+                  <li>Visualización y edición de: Taller de Grado, Nota Taller, Plan de Estudios, Actas de Defensa, Resolución, Solicitud Completa, Timeline y Observaciones.</li>
+                </ul>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- COMPONENTE EN EJECUCIÓN -->
+        <div class="contenedor-crud-ejecucion mat-elevation-z2">
+          <ucb-gestion-titulaciones></ucb-gestion-titulaciones>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- ============================================================ -->
+    <!-- TAB 6: CRUD AUTORIZACIONES -->
+    <!-- ============================================================ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">admin_panel_settings</mat-icon>
+        CRUD Autorizaciones
+      </ng-template>
+
+      <div class="tab-body-container">
+        <mat-card class="card-documentacion mat-elevation-z1">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">integration_instructions</mat-icon>
+            <mat-card-title>Módulo Institucional: CrudAutorizacionesModule</mat-card-title>
+            <mat-card-subtitle>libraries/crud-autorizaciones · Selector: <code>&lt;ucb-gestion-autorizaciones&gt;</code></mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-contratos">
+              <div class="col-contrato">
+                <h4>🌐 APIs Consumidas (6 Endpoints)</h4>
+                <ul>
+                  <li><code>Autorizacion/GetAutorizacion?idPersona=...</code></li>
+                  <li><code>Autorizacion/GetUsername?busq=...</code></li>
+                  <li><code>Autorizacion/GetAllAutorizaciones</code></li>
+                  <li><code>Autorizacion/AddAutorizacion</code> (POST)</li>
+                  <li><code>Autorizacion/UPDAutorizacion?id=...&idp=...</code> (POST)</li>
+                  <li><code>Autorizacion/DelAutorizacion?idAutorizacion=...</code> (POST)</li>
+                </ul>
+              </div>
+              <div class="col-contrato">
+                <h4>🧩 Componentes y Funcionalidades</h4>
+                <ul>
+                  <li><code>ucb-combobox-usuarios</code> — Búsqueda de personas para asociar permisos.</li>
+                  <li><code>ucb-formulario-autorizacion</code> — Formulario desacoplado con selector configurable de sede UCB.</li>
+                  <li>Gestión de roles y etapas administrativas UCB.</li>
+                </ul>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- COMPONENTE EN EJECUCIÓN -->
+        <div class="contenedor-crud-ejecucion mat-elevation-z2">
+          <ucb-gestion-autorizaciones></ucb-gestion-autorizaciones>
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+
+  <!-- ============================================================ -->
+  <!-- CONSOLA DE EVENTOS EN VIVO (@OUTPUT STREAM INSPECTOR) -->
+  <!-- ============================================================ -->
+  <mat-expansion-panel class="panel-consola mat-elevation-z2" [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon color="primary" class="icono-consola">terminal</mat-icon>
+        <strong>Consola de Eventos en Vivo (&#64;Output Stream)</strong>
+      </mat-panel-title>
+      <mat-panel-description>
+        Total de eventos capturados: {{ registroEventos.length }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="acciones-consola">
+      <span class="info-consola">Registra en tiempo real los eventos emitidos por cualquier componente de las librerías:</span>
+      <button mat-stroked-button color="warn" (click)="limpiarConsola()" [disabled]="registroEventos.length === 0">
+        <mat-icon>delete_sweep</mat-icon> Limpiar Consola
+      </button>
     </div>
 
-    <nav class="tests-leonardo__tabs" aria-label="Categorías de prueba">
-      <button
-        type="button"
-        class="tab-btn"
-        [class.tab-btn--activa]="tabActiva === 'buscadores'"
-        (click)="cambiarTab('buscadores')"
-      >
-        Buscadores y Personas
-      </button>
-      <button
-        type="button"
-        class="tab-btn"
-        [class.tab-btn--activa]="tabActiva === 'tarjetas'"
-        (click)="cambiarTab('tarjetas')"
-      >
-        Tarjetas (Perfil y Selección)
-      </button>
-    </nav>
-  </header>
-
-  <!-- PESTAÑA 1: BUSCADORES Y PERSONAS (UNO DEBAJO DEL OTRO) -->
-  <section *ngIf="tabActiva === 'buscadores'" class="tests-stack">
-    <!-- Bloque 1: Buscador de Docentes / Usuarios -->
-    <article class="prueba-card">
-      <div class="prueba-card__head">
-        <h2>1. Buscador de Docentes y Usuarios</h2>
-        <code>&lt;ucb-combobox-usuarios&gt;</code>
+    <div class="lista-eventos-consola" *ngIf="registroEventos.length > 0; else sinEventos">
+      <div class="item-evento" *ngFor="let ev of registroEventos">
+        <div class="encabezado-evento">
+          <span class="badge-hora">{{ ev.hora }}</span>
+          <span class="badge-componente">{{ ev.componente }}</span>
+          <span class="badge-nombre-evento">{{ ev.evento }}</span>
+        </div>
+        <pre class="datos-evento">{{ ev.datos }}</pre>
       </div>
-      <p class="prueba-card__desc">
-        Consulta <code>Autoridades/GetPersona</code> (mínimo 3 caracteres, ej. <strong>OROZ</strong>).
-      </p>
+    </div>
 
-      <ucb-combobox-usuarios
-        placeholder="Buscar docente o usuario por nombre..."
-        [resultados]="resultadosUsuarios"
-        [cargando]="cargandoUsuarios"
-        [error]="errorUsuarios"
-        (terminoBuscado)="buscarUsuarios($event)"
-        (usuarioSeleccionado)="seleccionarUsuario($event)"
-      ></ucb-combobox-usuarios>
-
-      <ucb-tarjeta-perfil
-        *ngIf="usuarioSeleccionado"
-        [persona]="usuarioSeleccionado"
-        [detalles]="detallesUsuario"
-      ></ucb-tarjeta-perfil>
-    </article>
-
-    <!-- Bloque 2: Buscador de Estudiantes por CI + Ficha Completa -->
-    <article class="prueba-card">
-      <div class="prueba-card__head">
-        <h2>2. Buscador de Estudiantes y Ficha Completa</h2>
-        <code>&lt;ucb-combobox-estudiantes&gt;</code>
+    <ng-template #sinEventos>
+      <div class="sin-eventos-box">
+        <mat-icon>sensors_off</mat-icon>
+        <p>No hay eventos emitidos aún. Interactúa con los buscadores, tarjetas o CRUDs para ver el flujo reactivo.</p>
       </div>
-      <p class="prueba-card__desc">
-        Consulta <code>GetEstudianteCarrera</code> por C.I. (ej. <strong>12603800</strong> o
-        <strong>7269100</strong>) y luego carga <code>GetEstudianteDatosCompletosConTodo</code>.
-      </p>
+    </ng-template>
+  </mat-expansion-panel>
 
-      <ucb-combobox-estudiantes
-        [resultados]="resultadosEstudiantes"
-        [cargando]="cargandoEstudiantes"
-        [error]="errorEstudiantes"
-        (terminoBuscado)="buscarEstudiantes($event)"
-        (estudianteSeleccionado)="seleccionarEstudiante($event)"
-      ></ucb-combobox-estudiantes>
-
-      <ucb-tarjeta-perfil
-        *ngIf="estudianteSeleccionado"
-        [persona]="estudianteSeleccionado"
-        [detalles]="detallesEstudianteSimple"
-      ></ucb-tarjeta-perfil>
-
-      <div class="estado-bloque" *ngIf="cargandoCompleto">
-        Cargando expediente completo del estudiante...
-      </div>
-      <div class="estado-bloque estado-bloque--error" *ngIf="errorCompleto">
-        {{ errorCompleto }}
-      </div>
-
-      <ucb-tarjeta-perfil
-        *ngIf="!cargandoCompleto && estudianteCompleto"
-        [persona]="estudianteCompleto"
-        [secciones]="seccionesEstudianteCompleto"
-      ></ucb-tarjeta-perfil>
-    </article>
-  </section>
-
-  <!-- PESTAÑA 2: TARJETAS -->
-  <section *ngIf="tabActiva === 'tarjetas'" class="tests-stack">
-    <article class="prueba-card">
-      <div class="prueba-card__head">
-        <h2>3. Tarjeta de Perfil (Datos Completos vs. Faltantes)</h2>
-        <code>&lt;ucb-tarjeta-perfil&gt;</code>
-      </div>
-
-      <div class="demo-controles">
-        <button
-          type="button"
-          class="btn-demo"
-          [class.btn-demo--activo]="modoPerfilDemo === 'completo'"
-          (click)="modoPerfilDemo = 'completo'"
-        >
-          Ver Perfil por Secciones (Completo)
-        </button>
-        <button
-          type="button"
-          class="btn-demo"
-          [class.btn-demo--activo]="modoPerfilDemo === 'incompleto'"
-          (click)="modoPerfilDemo = 'incompleto'"
-        >
-          Ver Perfil Simple (Alertas en Rojo)
-        </button>
-      </div>
-
-      <ucb-tarjeta-perfil
-        *ngIf="modoPerfilDemo === 'completo'"
-        [persona]="personaDemoCompleta"
-        [secciones]="seccionesDemoCompleta"
-      ></ucb-tarjeta-perfil>
-
-      <ucb-tarjeta-perfil
-        *ngIf="modoPerfilDemo === 'incompleto'"
-        [persona]="personaDemoIncompleta"
-        [detalles]="detallesDemoIncompleto"
-      ></ucb-tarjeta-perfil>
-    </article>
-
-    <article class="prueba-card">
-      <div class="prueba-card__head">
-        <h2>4. Tarjeta de Selección (Variantes y Estado Activo)</h2>
-        <code>&lt;ucb-tarjeta-seleccion&gt;</code>
-      </div>
-      <p class="prueba-card__desc">
-        Haz clic en cualquier tarjeta para alternar el estado seleccionado e inactivo.
-      </p>
-
-      <div class="tarjetas-seleccion-grid">
-        <ucb-tarjeta-seleccion
-          *ngFor="let item of tarjetasDemo; let i = index"
-          [seleccionada]="indiceTarjetaSeleccionada === i"
-          [inactiva]="indiceTarjetaSeleccionada !== null && indiceTarjetaSeleccionada !== i"
-          [tagIzquierdo]="item.tagIzquierdo"
-          [tagDerecho]="item.tagDerecho"
-          [titulo]="item.titulo"
-          [subtitulo]="item.subtitulo"
-          [subtituloCursiva]="item.subtituloCursiva"
-          [metaPrincipalEtiqueta]="item.metaPrincipalEtiqueta"
-          [metaPrincipalValor]="item.metaPrincipalValor"
-          [metaSecundarioIzquierda]="item.metaSecundarioIzquierda"
-          [badgeDerecha]="item.badgeDerecha"
-          [tipoBadge]="item.tipoBadge"
-          (seleccionar)="alternarTarjetaDemo(i)"
-        ></ucb-tarjeta-seleccion>
-      </div>
-    </article>
-  </section>
-</main>
+</div>

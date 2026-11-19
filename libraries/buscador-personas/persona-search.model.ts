@@ -5,6 +5,10 @@ export interface PersonaBusqueda extends PersonaPerfil {
   id?: number;
   idUsuario?: number;
   documentoIdentidad?: string | null;
+  ci?: string | null;
+  usuario?: string | null;
+  username?: string | null;
+  tipoPersona?: string | null;
   descripcion?: string | null;
 }
 
@@ -16,6 +20,9 @@ export interface EstudianteCarrera extends PersonaPerfil {
   carnet?: string | null;
   idSubdepartamento?: number;
   idSubdepto?: number;
+  nomRegional?: string | null;
+  siglaRegional?: string | null;
+  codigoCarrera?: string | number | null;
 }
 
 export interface EstudianteCompleto extends EstudianteCarrera {

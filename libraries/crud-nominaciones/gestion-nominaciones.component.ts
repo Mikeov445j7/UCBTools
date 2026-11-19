@@ -117,8 +117,11 @@ export class GestionNominacionesComponent {
     });
   }
 
-  eliminarNominacionAPI(id: number | string): void {
-    this.nominacionesService.delNominacion(id).subscribe({
+  eliminarNominacionAPI(id: unknown): void {
+    const numId = Number(id);
+    if (!numId) return;
+
+    this.nominacionesService.delNominacion(numId).subscribe({
       next: () => {
         this.mensajeAlerta = '✅ Nominación eliminada correctamente.';
         this.nominacionesEncontradas = this.nominacionesEncontradas.filter(n => n.raw['id'] !== id);

@@ -1,1 +1,1 @@
-export type TipoBadgeTarjeta = 'amarillo' | 'verde' | 'azul';
+export type TipoBadgeTarjeta = 'amarillo' | 'verde' | 'azul' | 'gris';

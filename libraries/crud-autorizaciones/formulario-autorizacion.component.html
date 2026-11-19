@@ -1,0 +1,75 @@
+<div class="tarjeta-formulario fade-in">
+  <div class="cabecera-formulario">
+    <div class="icono-cabecera">{{ esEdicion ? '✏️' : '🛡️' }}</div>
+    <div class="textos-cabecera">
+      <h3 class="titulo-formulario">
+        {{ esEdicion ? 'Editar Autorización' : 'Nueva Autorización' }}
+      </h3>
+      <p class="subtitulo-formulario">
+        {{ esEdicion ? 'Modifica los permisos y datos de la autorización.' : 'Gestión de permisos y etapas administrativas.' }}
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="formulario" (ngSubmit)="enviarDatos()">
+    <div class="grupo-seccion">
+      <div class="grupo-header">
+        <span class="grupo-icono">🔑</span>
+        <h4>Datos de Autorización</h4>
+      </div>
+      
+      <div class="grid-formulario">
+        <div class="campo">
+          <label>ID Persona (No editable)</label>
+          <input type="number" formControlName="idPersona" class="input-form" title="El ID de la persona no se puede modificar">
+        </div>
+
+        <div class="campo">
+          <label>Etapa (Cuenta UCB) *</label>
+          <input type="text" formControlName="etapa" class="input-form" placeholder="Ej. nombre.apellido">
+        </div>
+
+        <div class="campo">
+          <label>Rol (Número) *</label>
+          <input type="number" formControlName="rol" class="input-form" placeholder="Ej. 1">
+        </div>
+
+        <div class="campo">
+          <label>Sede / Regional *</label>
+          <select formControlName="idSede" class="input-form" (change)="onSedeChange(formulario.get('idSede')?.value)">
+            <option [ngValue]="null" disabled>Selecciona una sede UCB...</option>
+            <option *ngFor="let s of sedes" [ngValue]="s.idRegional">
+              {{ s.nomRegional }} ({{ s.siglaRegional }})
+            </option>
+          </select>
+          <small *ngIf="sedeSeleccionadaTexto" class="info-sede">
+            Sede asignada: <strong>{{ sedeSeleccionadaTexto }}</strong>
+          </small>
+        </div>
+
+        <div class="campo">
+          <label>ID Departamento</label>
+          <input type="number" formControlName="idDepartamento" class="input-form" placeholder="Ej. 10">
+        </div>
+
+        <div class="campo">
+          <label>Usuario Registro</label>
+          <input type="text" formControlName="usuarioRegistro" class="input-form" placeholder="Opcional">
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONERA -->
+    <div class="acciones-formulario">
+      <div class="botones">
+        <button type="button" class="btn btn-cancelar" (click)="cancelar.emit()">Cancelar</button>
+        <button type="submit" class="btn btn-guardar" [disabled]="formulario.invalid || (esEdicion && !formulario.dirty)">
+          {{ esEdicion ? 'Guardar Cambios' : 'Crear Autorización' }}
+        </button>
+      </div>
+      <small *ngIf="formulario.invalid" class="alerta-campo">
+        * Completa los campos obligatorios para guardar
+      </small>
+    </div>
+  </form>
+</div>

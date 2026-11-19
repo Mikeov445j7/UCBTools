@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-
 import {
   EstudianteCarrera,
+  EstudianteCompleto,
   PersonaBusqueda,
 } from '../../../../libraries/buscador-personas';
 import {
@@ -12,7 +12,15 @@ import {
 import { TipoBadgeTarjeta } from '../../../../libraries/tarjeta-seleccion';
 import { PersonaService } from '../../services/persona.service';
 
-interface TarjetaDemoSeleccion {
+export interface EventoConsola {
+  id: number;
+  hora: string;
+  componente: string;
+  evento: string;
+  datos: string;
+}
+
+export interface TarjetaDemoSeleccion {
   id: number;
   tagIzquierdo: string;
   tagDerecho: string;
@@ -33,16 +41,18 @@ interface TarjetaDemoSeleccion {
   styleUrls: ['./tests-leonardo.component.scss'],
 })
 export class TestsLeonardoComponent {
-  tabActiva: 'buscadores' | 'tarjetas' = 'buscadores';
+  // Consola de eventos en vivo
+  registroEventos: EventoConsola[] = [];
+  private contadorEvento = 1;
 
-  // --- Estado: Buscador de Docentes / Usuarios (GetPersona) ---
+  // Estado: Buscador de Docentes / Usuarios
   resultadosUsuarios: PersonaBusqueda[] = [];
   cargandoUsuarios = false;
   errorUsuarios: string | null = null;
   usuarioSeleccionado: PersonaBusqueda | null = null;
   detallesUsuario: TarjetaDetalle[] = [];
 
-  // --- Estado: Buscador de Estudiantes por CI (GetEstudianteCarrera + DatosCompletos) ---
+  // Estado: Buscador de Estudiantes por CI
   resultadosEstudiantes: EstudianteCarrera[] = [];
   cargandoEstudiantes = false;
   errorEstudiantes: string | null = null;
@@ -53,45 +63,49 @@ export class TestsLeonardoComponent {
   cargandoCompleto = false;
   errorCompleto: string | null = null;
 
-  // --- Estado: Demostración de Tarjeta Perfil (sin red) ---
+  // Estado: Demostración de Tarjeta Perfil
   modoPerfilDemo: 'completo' | 'incompleto' = 'completo';
   readonly personaDemoCompleta: PersonaPerfil = {
-    nombres: 'VALERIA',
+    nombres: 'VALERIA ANDREA',
     primerApellido: 'MENDOZA',
     segundoApellido: 'TORRES',
     nombreCarrera: 'Ingeniería de Sistemas',
   };
   readonly seccionesDemoCompleta: TarjetaSeccion[] = [
     {
-      titulo: 'Identidad y Contacto',
+      titulo: 'Identidad y Contacto Institucional',
+      icono: 'badge',
       detalles: [
-        { etiqueta: 'Documento', valor: '8392014 LP', tieneDato: true },
-        { etiqueta: 'Correo', valor: 'valeria.mendoza@ucb.edu.bo', tieneDato: true },
-        { etiqueta: 'Sede', valor: 'La Paz', tieneDato: true },
+        { etiqueta: 'Documento C.I.', valor: '8392014 LP', tieneDato: true },
+        { etiqueta: 'Correo Institucional', valor: 'valeria.mendoza@ucb.edu.bo', tieneDato: true },
+        { etiqueta: 'Sede Regional', valor: 'Regional La Paz', tieneDato: true },
       ],
     },
     {
-      titulo: 'Estado Académico',
+      titulo: 'Estado Académico y Titulación',
+      icono: 'school',
       detalles: [
         { etiqueta: 'Carrera', valor: 'Ingeniería de Sistemas', tieneDato: true },
-        { etiqueta: 'Modalidad', valor: 'Proyecto de Grado', tieneDato: true },
+        { etiqueta: 'Modalidad de Grado', valor: 'Proyecto de Grado', tieneDato: true },
+        { etiqueta: 'Estado del Trámite', valor: 'Habilitado para Defensa', tieneDato: true },
       ],
     },
   ];
+
   readonly personaDemoIncompleta: PersonaPerfil = {
-    nombres: 'JUAN',
+    nombres: 'JUAN CARLOS',
     primerApellido: 'MAMANI',
     segundoApellido: 'FALTA SEGUNDO_APELLIDO',
     nombreCarrera: null,
   };
   readonly detallesDemoIncompleto: TarjetaDetalle[] = [
-    { etiqueta: 'Documento', valor: '7269100', tieneDato: true },
+    { etiqueta: 'Documento C.I.', valor: '7269100', tieneDato: true },
     { etiqueta: 'Departamento', valor: 'SIN DEPARTAMENTO', tieneDato: false },
-    { etiqueta: 'Ciudad', valor: 'SIN CIUDAD', tieneDato: false },
-    { etiqueta: 'Correo', valor: 'Dato faltante', tieneDato: false },
+    { etiqueta: 'Ciudad / Regional', valor: 'SIN CIUDAD', tieneDato: false },
+    { etiqueta: 'Correo Institucional', valor: 'Dato faltante', tieneDato: false },
   ];
 
-  // --- Estado: Demostración de Tarjeta Selección ---
+  // Estado: Demostración de Tarjeta Selección
   indiceTarjetaSeleccionada: number | null = null;
   readonly tarjetasDemo: TarjetaDemoSeleccion[] = [
     {
@@ -137,12 +151,34 @@ export class TestsLeonardoComponent {
 
   constructor(private readonly personaService: PersonaService) {}
 
-  cambiarTab(tab: 'buscadores' | 'tarjetas'): void {
-    this.tabActiva = tab;
+  // Manejador central de registro de eventos
+  registrarEvento(componente: string, evento: string, datos: unknown): void {
+    const ahora = new Date();
+    const hora = ahora.toTimeString().split(' ')[0] + '.' + ahora.getMilliseconds().toString().padStart(3, '0');
+    const datosStr = typeof datos === 'object' ? JSON.stringify(datos, null, 2) : String(datos);
+
+    this.registroEventos.unshift({
+      id: this.contadorEvento++,
+      hora,
+      componente,
+      evento,
+      datos: datosStr,
+    });
+
+    if (this.registroEventos.length > 50) {
+      this.registroEventos.pop();
+    }
   }
 
+  limpiarConsola(): void {
+    this.registroEventos = [];
+  }
+
+  // --- Handlers: Buscador de Docentes / Usuarios ---
   buscarUsuarios(termino: string): void {
     this.errorUsuarios = null;
+    this.registrarEvento('ucb-combobox-usuarios', '@Output() terminoBuscado', termino);
+
     if (!termino) {
       this.resultadosUsuarios = [];
       this.cargandoUsuarios = false;
@@ -154,11 +190,13 @@ export class TestsLeonardoComponent {
       next: (datos) => {
         this.resultadosUsuarios = Array.isArray(datos) ? datos : [];
         this.cargandoUsuarios = false;
+        this.registrarEvento('PersonaService', 'Autoridades/GetPersona SUCCESS', `Recibidos ${this.resultadosUsuarios.length} registros`);
       },
-      error: () => {
+      error: (err: unknown) => {
         this.resultadosUsuarios = [];
         this.cargandoUsuarios = false;
         this.errorUsuarios = 'Error al consultar Autoridades/GetPersona.';
+        console.error(err);
       },
     });
   }
@@ -166,27 +204,15 @@ export class TestsLeonardoComponent {
   seleccionarUsuario(usuario: PersonaBusqueda): void {
     this.usuarioSeleccionado = usuario;
     this.resultadosUsuarios = [];
-    this.detallesUsuario = [
-      {
-        etiqueta: 'Documento de Identidad',
-        valor: usuario.documentoIdentidad ?? 'Sin documento',
-        tieneDato: Boolean(usuario.documentoIdentidad),
-      },
-      {
-        etiqueta: 'Rol / Cargo',
-        valor: usuario.descripcion ?? 'Registrado',
-        tieneDato: true,
-      },
-      {
-        etiqueta: 'ID Persona',
-        valor: usuario.idPersona ?? usuario.id ?? 'N/D',
-        tieneDato: Boolean(usuario.idPersona ?? usuario.id),
-      },
-    ];
+    this.detallesUsuario = this.personaService.armarDetallesUsuario(usuario);
+    this.registrarEvento('ucb-combobox-usuarios', '@Output() usuarioSeleccionado', usuario);
   }
 
+  // --- Handlers: Buscador de Estudiantes ---
   buscarEstudiantes(ci: string): void {
     this.errorEstudiantes = null;
+    this.registrarEvento('ucb-combobox-estudiantes', '@Output() terminoBuscado', ci);
+
     if (!ci) {
       this.resultadosEstudiantes = [];
       this.cargandoEstudiantes = false;
@@ -198,11 +224,13 @@ export class TestsLeonardoComponent {
       next: (datos) => {
         this.resultadosEstudiantes = Array.isArray(datos) ? datos : [];
         this.cargandoEstudiantes = false;
+        this.registrarEvento('PersonaService', 'Estudiante/GetEstudianteCarrera SUCCESS', `Recibidos ${this.resultadosEstudiantes.length} registros`);
       },
-      error: () => {
+      error: (err: unknown) => {
         this.resultadosEstudiantes = [];
         this.cargandoEstudiantes = false;
         this.errorEstudiantes = 'Error al consultar Estudiante/GetEstudianteCarrera.';
+        console.error(err);
       },
     });
   }
@@ -210,43 +238,43 @@ export class TestsLeonardoComponent {
   seleccionarEstudiante(estudiante: EstudianteCarrera): void {
     this.estudianteSeleccionado = estudiante;
     this.resultadosEstudiantes = [];
-    this.detallesEstudianteSimple = [
-      {
-        etiqueta: 'Documento de Identidad',
-        valor: estudiante.documentoIdentidad ?? 'Sin documento',
-        tieneDato: Boolean(estudiante.documentoIdentidad),
-      },
-      {
-        etiqueta: 'Carrera',
-        valor: estudiante.nombreCarrera ?? 'Sin carrera',
-        tieneDato: Boolean(estudiante.nombreCarrera),
-      },
-      {
-        etiqueta: 'ID Subdepartamento',
-        valor: estudiante.idSubdepartamento ?? estudiante.idSubdepto ?? 'N/D',
-        tieneDato: Boolean(estudiante.idSubdepartamento ?? estudiante.idSubdepto),
-      },
-    ];
+    this.detallesEstudianteSimple = this.personaService.armarDetallesEstudianteSimple(estudiante);
 
     this.cargandoCompleto = true;
     this.errorCompleto = null;
     this.estudianteCompleto = null;
     this.seccionesEstudianteCompleto = [];
 
+    this.registrarEvento('ucb-combobox-estudiantes', '@Output() estudianteSeleccionado', estudiante);
+
     this.personaService.obtenerPerfilCompletoEstudiante(estudiante).subscribe({
       next: (perfil) => {
         this.cargandoCompleto = false;
         this.estudianteCompleto = perfil.estudiante;
         this.seccionesEstudianteCompleto = perfil.secciones;
+        this.registrarEvento('PersonaService', 'GetEstudianteDatosCompletosConTodo SUCCESS', `Expediente completo obtenido`);
       },
-      error: () => {
+      error: (err: unknown) => {
         this.cargandoCompleto = false;
         this.errorCompleto = 'No se pudo obtener el detalle completo del estudiante.';
+        console.error(err);
       },
     });
   }
 
-  alternarTarjetaDemo(index: number): void {
-    this.indiceTarjetaSeleccionada = this.indiceTarjetaSeleccionada === index ? null : index;
+  // --- Handlers: Tarjeta Selección ---
+  seleccionarTarjetaDemo(tarjeta: TarjetaDemoSeleccion, indice: number): void {
+    if (this.indiceTarjetaSeleccionada === indice) {
+      this.indiceTarjetaSeleccionada = null;
+      this.registrarEvento('ucb-tarjeta-seleccion', '@Output() seleccionar (deselección)', `Tarjeta deseleccionada ID: ${tarjeta.id}`);
+    } else {
+      this.indiceTarjetaSeleccionada = indice;
+      this.registrarEvento('ucb-tarjeta-seleccion', '@Output() seleccionar', { id: tarjeta.id, titulo: tarjeta.titulo });
+    }
+  }
+
+  setModoPerfilDemo(modo: 'completo' | 'incompleto'): void {
+    this.modoPerfilDemo = modo;
+    this.registrarEvento('ucb-tarjeta-perfil', 'Cambio de Modo Demo', modo);
   }
 }
