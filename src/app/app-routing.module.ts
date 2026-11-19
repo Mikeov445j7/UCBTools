@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './pages/home/home.component';
+import { PruebasOctavioComponent } from './components/pruebas-octavio/pruebas-octavio.component';
 import { TestsLeonardoComponent } from './tests/tests-leonardo/tests-leonardo.component';
 import { TestMikeComponent } from './testMike/testMike.component';
 import { PruebasComponent } from './tests/tests-leonardo/pruebas/pruebas.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'reportes', component: PruebasOctavioComponent },
   { path: 'tests-leonardo', component: TestsLeonardoComponent },
   { path: 'tests-mike', component: TestMikeComponent },
   { path: 'pruebas', component: PruebasComponent },

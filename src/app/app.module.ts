@@ -4,8 +4,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SelectorSedeComponent } from '../../libraries/selector-sede';
+import { ReporteContainerComponent } from '../../libraries/reportes';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { PruebasOctavioComponent } from './components/pruebas-octavio/pruebas-octavio.component';
 import { HomeComponent } from './pages/home/home.component';
 import { TestsModule } from './tests/tests.module';
 import { TestMikeComponent } from './testMike/testMike.component';
@@ -16,15 +18,17 @@ import { PruebasComponent } from './tests/tests-leonardo/pruebas/pruebas.compone
     AppComponent,
     HomeComponent,
     TestMikeComponent,
-      PruebasComponent
-   ],
+    PruebasComponent,
+    PruebasOctavioComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     SelectorSedeComponent,
-    TestsModule
+    TestsModule,
+    ReporteContainerComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

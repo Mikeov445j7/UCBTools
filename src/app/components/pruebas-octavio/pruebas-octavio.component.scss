@@ -1,0 +1,6 @@
+:host { background: #f2f4f8; display: block; min-height: 100vh; }
+.demo { color: #1c2637; font-family: system-ui, sans-serif; max-width: 1280px; padding: 1.5rem; }
+.demo__header { margin-bottom: 1.5rem; }
+.demo__header h2 { color: #152b55; font-size: 1.5rem; margin: 0 0 .4rem; }
+.demo__header span { color: #475569; font-size: .9rem; }
+@media (max-width: 600px) { .demo { padding: 1rem; } }

@@ -1,0 +1,25 @@
+<section class="reporte" [attr.aria-label]="config.titulo || 'Reporte'">
+  <header class="reporte__header">
+    <h2>{{ config.titulo || 'Reporte' }}</h2>
+  </header>
+
+  <div *ngIf="actual.buscador || columnasFiltro.length" class="reporte__controls">
+    <div *ngIf="actual.buscador" class="reporte__field"><label [for]="instancia + '-buscar'">Buscar por {{ etiqueta(actual.buscador) }}</label><input [id]="instancia + '-buscar'" type="search" [ngModel]="busqueda" (ngModelChange)="cambiarBusqueda($event)" placeholder="Escribe para buscar"></div>
+    <div *ngFor="let columna of columnasFiltro; trackBy: trackColumna; let i = index" class="reporte__field">
+      <label [for]="instancia + '-filtro-' + i">{{ columna.etiqueta }}</label>
+      <select *ngIf="columna.opciones.length <= umbral" [id]="instancia + '-filtro-' + i" [ngModel]="seleccion[columna.clave] || ''" (ngModelChange)="cambiarFiltro(columna.clave, $event)">
+        <option value="">Todos</option><option *ngFor="let opcion of columna.opciones" [value]="opcion.clave">{{ opcion.texto }}</option>
+      </select>
+      <ng-container *ngIf="columna.opciones.length > umbral"><input [id]="instancia + '-filtro-' + i" [attr.list]="instancia + '-opciones-' + i" [ngModel]="textosFiltro[columna.clave] || ''" (ngModelChange)="cambiarFiltroTexto(columna, $event)" placeholder="Buscar o seleccionar"><datalist [id]="instancia + '-opciones-' + i"><option *ngFor="let opcion of columna.opciones" [value]="opcion.texto"></option></datalist></ng-container>
+    </div>
+    <button type="button" class="reporte__link" (click)="limpiarFiltros()">Limpiar filtros</button>
+  </div>
+
+  <p class="reporte__count" aria-live="polite">{{ filasVisibles.length }} de {{ datos.length }} registros</p>
+  <div *ngIf="filasVisibles.length; else sinCoincidencias" class="reporte__scroll reporte__results" tabindex="0" aria-label="Tabla de resultados, desplazable horizontalmente">
+    <table><thead><tr><th *ngFor="let columna of columnasVisibles; trackBy: trackColumna" scope="col">{{ columna.etiqueta }}</th></tr></thead><tbody>
+      <tr *ngFor="let fila of filasMostradas; trackBy: trackFila"><td *ngFor="let valor of fila">{{ valor }}</td></tr>
+    </tbody></table>
+  </div>
+  <ng-template #sinCoincidencias><p class="reporte__empty" role="status">{{ datos.length ? 'No hay registros que coincidan con los filtros.' : (config.mensajeVacio || 'No existen registros disponibles.') }}</p></ng-template>
+</section>
