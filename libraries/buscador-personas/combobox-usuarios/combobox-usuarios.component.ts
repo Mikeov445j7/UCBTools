@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 
 import { ComboboxBaseDirective } from '../combobox-base.directive';
 import { PersonaBusqueda } from '../persona-search.model';
+import { PersonaSearchService } from '../persona-search.service';
 
 @Component({
   selector: 'ucb-combobox-usuarios',
@@ -14,6 +15,45 @@ export class ComboboxUsuariosComponent extends ComboboxBaseDirective<PersonaBusq
   @Output() usuarioSeleccionado = new EventEmitter<PersonaBusqueda>();
 
   protected override readonly longitudMinima = 3;
+
+  constructor(
+    host: ElementRef<HTMLElement>,
+    private readonly personaSearchService: PersonaSearchService
+  ) {
+    super(host);
+  }
+
+  override alEscribir(valor: string): void {
+    super.alEscribir(valor);
+
+    // Si el componente padre maneja terminoBuscado, no auto-consultamos
+    if (this.terminoBuscado.observed) {
+      return;
+    }
+
+    const nombre = valor?.trim();
+    if (!nombre || nombre.length < this.longitudMinima) {
+      this.resultados = [];
+      this.cargando = false;
+      this.error = null;
+      return;
+    }
+
+    this.cargando = true;
+    this.error = null;
+    this.personaSearchService.buscarPersonas(nombre).subscribe({
+      next: (res) => {
+        this.resultados = res ?? [];
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.resultados = [];
+        this.cargando = false;
+        this.error = 'Error al buscar personas/usuarios';
+        console.error(err);
+      },
+    });
+  }
 
   seleccionar(item: PersonaBusqueda): void {
     this.limpiarLuegoDeSeleccion();
@@ -29,3 +69,4 @@ export class ComboboxUsuariosComponent extends ComboboxBaseDirective<PersonaBusq
     return item.documentoIdentidad ? `CI: ${item.documentoIdentidad}` : '';
   }
 }
+

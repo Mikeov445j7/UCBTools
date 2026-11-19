@@ -28,7 +28,7 @@ export abstract class ComboboxBaseDirective<T> implements OnInit, OnDestroy {
   private readonly searchSubject = new Subject<string>();
   private subscription?: Subscription;
 
-  constructor(private readonly host: ElementRef<HTMLElement>) {}
+  constructor(protected readonly host: ElementRef<HTMLElement>) {}
 
   ngOnInit(): void {
     this.subscription = this.searchSubject
