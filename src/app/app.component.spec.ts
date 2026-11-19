@@ -25,10 +25,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('UCBVANTools');
   });
 
-  it('should render the home view', () => {
+  it('should render the router outlet', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-home')).not.toBeNull();
+    expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
 });

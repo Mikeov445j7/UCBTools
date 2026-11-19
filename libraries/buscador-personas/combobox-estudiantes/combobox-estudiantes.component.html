@@ -1,0 +1,20 @@
+<div class="combobox-contenedor">
+  <input
+    #searchInput
+    type="text"
+    [placeholder]="placeholder"
+    (input)="alEscribir(searchInput.value)"
+  />
+
+  <div class="combobox-estado" *ngIf="cargando">Buscando...</div>
+  <div class="combobox-estado combobox-estado--error" *ngIf="!cargando && error">{{ error }}</div>
+
+  <ul class="lista-resultados" *ngIf="resultados.length > 0">
+    <li class="item-resultado" *ngFor="let item of resultados" (click)="seleccionar(item)">
+      <span class="nombre">{{ item.nombres }} {{ item.primerApellido }} {{ item.segundoApellido }}</span>
+      <span class="subtitulo subtitulo--badge" *ngIf="item.documentoIdentidad">
+        CI: {{ item.documentoIdentidad }}
+      </span>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,50 @@
+<div class="resultado-tarjeta fade-in" *ngIf="persona">
+  <div class="tarjeta-decorador"></div>
+
+  <div class="tarjeta-contenido">
+    <div class="perfil-header">
+      <div class="avatar-placeholder">
+        {{ obtenerIniciales() }}
+      </div>
+      <div class="perfil-nombres">
+        <h3>
+          {{ persona.nombres }} {{ persona.primerApellido }}
+          <span *ngIf="persona.segundoApellido" [class.texto-alerta]="!esValido(persona.segundoApellido)">
+            {{ persona.segundoApellido }}
+          </span>
+          <span *ngIf="persona.tercerApellido" [class.texto-alerta]="!esValido(persona.tercerApellido)">
+            {{ persona.tercerApellido }}
+          </span>
+        </h3>
+        <span class="badge-rol">{{ persona.nombreCarrera ? 'Estudiante' : 'Registrado' }}</span>
+      </div>
+    </div>
+
+    <!-- Renderizado por secciones -->
+    <ng-container *ngIf="secciones.length > 0">
+      <div class="seccion-bloque" *ngFor="let seccion of secciones">
+        <h4 class="seccion-titulo">{{ seccion.titulo }}</h4>
+        <div class="info-grid">
+          <div class="info-item" *ngFor="let item of seccion.detalles">
+            <span class="label">{{ item.etiqueta }}</span>
+            <span class="value" [class.texto-alerta]="!item.tieneDato">
+              {{ item.valor }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Renderizado simple -->
+    <ng-container *ngIf="detalles.length > 0 && secciones.length === 0">
+      <div class="info-grid simple-grid">
+        <div class="info-item" *ngFor="let item of detalles">
+          <span class="label">{{ item.etiqueta }}</span>
+          <span class="value" [class.texto-alerta]="!item.tieneDato">
+            {{ item.valor }}
+          </span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

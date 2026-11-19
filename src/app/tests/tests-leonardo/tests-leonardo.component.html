@@ -1,0 +1,169 @@
+<main class="tests-leonardo">
+  <header class="tests-leonardo__header">
+    <div>
+      <p class="tests-leonardo__eyebrow">Banco de Pruebas · Leonardo</p>
+      <h1>Pruebas de Componentes Migrados</h1>
+      <p class="tests-leonardo__subtitle">
+        Validación de las librerías <code>buscador-personas</code>, <code>tarjeta-perfil</code> y
+        <code>tarjeta-seleccion</code> en Angular 18 con arquitectura <code>NgModule</code>.
+      </p>
+    </div>
+
+    <nav class="tests-leonardo__tabs" aria-label="Categorías de prueba">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.tab-btn--activa]="tabActiva === 'buscadores'"
+        (click)="cambiarTab('buscadores')"
+      >
+        Buscadores y Personas
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.tab-btn--activa]="tabActiva === 'tarjetas'"
+        (click)="cambiarTab('tarjetas')"
+      >
+        Tarjetas (Perfil y Selección)
+      </button>
+    </nav>
+  </header>
+
+  <!-- PESTAÑA 1: BUSCADORES Y PERSONAS (UNO DEBAJO DEL OTRO) -->
+  <section *ngIf="tabActiva === 'buscadores'" class="tests-stack">
+    <!-- Bloque 1: Buscador de Docentes / Usuarios -->
+    <article class="prueba-card">
+      <div class="prueba-card__head">
+        <h2>1. Buscador de Docentes y Usuarios</h2>
+        <code>&lt;ucb-combobox-usuarios&gt;</code>
+      </div>
+      <p class="prueba-card__desc">
+        Consulta <code>Autoridades/GetPersona</code> (mínimo 3 caracteres, ej. <strong>OROZ</strong>).
+      </p>
+
+      <ucb-combobox-usuarios
+        placeholder="Buscar docente o usuario por nombre..."
+        [resultados]="resultadosUsuarios"
+        [cargando]="cargandoUsuarios"
+        [error]="errorUsuarios"
+        (terminoBuscado)="buscarUsuarios($event)"
+        (usuarioSeleccionado)="seleccionarUsuario($event)"
+      ></ucb-combobox-usuarios>
+
+      <ucb-tarjeta-perfil
+        *ngIf="usuarioSeleccionado"
+        [persona]="usuarioSeleccionado"
+        [detalles]="detallesUsuario"
+      ></ucb-tarjeta-perfil>
+    </article>
+
+    <!-- Bloque 2: Buscador de Estudiantes por CI + Ficha Completa -->
+    <article class="prueba-card">
+      <div class="prueba-card__head">
+        <h2>2. Buscador de Estudiantes y Ficha Completa</h2>
+        <code>&lt;ucb-combobox-estudiantes&gt;</code>
+      </div>
+      <p class="prueba-card__desc">
+        Consulta <code>GetEstudianteCarrera</code> por C.I. (ej. <strong>12603800</strong> o
+        <strong>7269100</strong>) y luego carga <code>GetEstudianteDatosCompletosConTodo</code>.
+      </p>
+
+      <ucb-combobox-estudiantes
+        [resultados]="resultadosEstudiantes"
+        [cargando]="cargandoEstudiantes"
+        [error]="errorEstudiantes"
+        (terminoBuscado)="buscarEstudiantes($event)"
+        (estudianteSeleccionado)="seleccionarEstudiante($event)"
+      ></ucb-combobox-estudiantes>
+
+      <ucb-tarjeta-perfil
+        *ngIf="estudianteSeleccionado"
+        [persona]="estudianteSeleccionado"
+        [detalles]="detallesEstudianteSimple"
+      ></ucb-tarjeta-perfil>
+
+      <div class="estado-bloque" *ngIf="cargandoCompleto">
+        Cargando expediente completo del estudiante...
+      </div>
+      <div class="estado-bloque estado-bloque--error" *ngIf="errorCompleto">
+        {{ errorCompleto }}
+      </div>
+
+      <ucb-tarjeta-perfil
+        *ngIf="!cargandoCompleto && estudianteCompleto"
+        [persona]="estudianteCompleto"
+        [secciones]="seccionesEstudianteCompleto"
+      ></ucb-tarjeta-perfil>
+    </article>
+  </section>
+
+  <!-- PESTAÑA 2: TARJETAS -->
+  <section *ngIf="tabActiva === 'tarjetas'" class="tests-stack">
+    <article class="prueba-card">
+      <div class="prueba-card__head">
+        <h2>3. Tarjeta de Perfil (Datos Completos vs. Faltantes)</h2>
+        <code>&lt;ucb-tarjeta-perfil&gt;</code>
+      </div>
+
+      <div class="demo-controles">
+        <button
+          type="button"
+          class="btn-demo"
+          [class.btn-demo--activo]="modoPerfilDemo === 'completo'"
+          (click)="modoPerfilDemo = 'completo'"
+        >
+          Ver Perfil por Secciones (Completo)
+        </button>
+        <button
+          type="button"
+          class="btn-demo"
+          [class.btn-demo--activo]="modoPerfilDemo === 'incompleto'"
+          (click)="modoPerfilDemo = 'incompleto'"
+        >
+          Ver Perfil Simple (Alertas en Rojo)
+        </button>
+      </div>
+
+      <ucb-tarjeta-perfil
+        *ngIf="modoPerfilDemo === 'completo'"
+        [persona]="personaDemoCompleta"
+        [secciones]="seccionesDemoCompleta"
+      ></ucb-tarjeta-perfil>
+
+      <ucb-tarjeta-perfil
+        *ngIf="modoPerfilDemo === 'incompleto'"
+        [persona]="personaDemoIncompleta"
+        [detalles]="detallesDemoIncompleto"
+      ></ucb-tarjeta-perfil>
+    </article>
+
+    <article class="prueba-card">
+      <div class="prueba-card__head">
+        <h2>4. Tarjeta de Selección (Variantes y Estado Activo)</h2>
+        <code>&lt;ucb-tarjeta-seleccion&gt;</code>
+      </div>
+      <p class="prueba-card__desc">
+        Haz clic en cualquier tarjeta para alternar el estado seleccionado e inactivo.
+      </p>
+
+      <div class="tarjetas-seleccion-grid">
+        <ucb-tarjeta-seleccion
+          *ngFor="let item of tarjetasDemo; let i = index"
+          [seleccionada]="indiceTarjetaSeleccionada === i"
+          [inactiva]="indiceTarjetaSeleccionada !== null && indiceTarjetaSeleccionada !== i"
+          [tagIzquierdo]="item.tagIzquierdo"
+          [tagDerecho]="item.tagDerecho"
+          [titulo]="item.titulo"
+          [subtitulo]="item.subtitulo"
+          [subtituloCursiva]="item.subtituloCursiva"
+          [metaPrincipalEtiqueta]="item.metaPrincipalEtiqueta"
+          [metaPrincipalValor]="item.metaPrincipalValor"
+          [metaSecundarioIzquierda]="item.metaSecundarioIzquierda"
+          [badgeDerecha]="item.badgeDerecha"
+          [tipoBadge]="item.tipoBadge"
+          (seleccionar)="alternarTarjetaDemo(i)"
+        ></ucb-tarjeta-seleccion>
+      </div>
+    </article>
+  </section>
+</main>

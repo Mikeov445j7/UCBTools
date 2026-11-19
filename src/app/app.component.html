@@ -1,1 +1,24 @@
-<app-home></app-home>
+<header class="app-nav">
+  <div class="app-nav__inner">
+    <span class="app-nav__brand">UCBVANTools</span>
+    <nav class="app-nav__links" aria-label="Navegación principal">
+      <a
+        routerLink="/"
+        routerLinkActive="app-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="app-nav__link"
+      >
+        Inicio
+      </a>
+      <a
+        routerLink="/tests-leonardo"
+        routerLinkActive="app-nav__link--active"
+        class="app-nav__link"
+      >
+        Tests Leonardo
+      </a>
+    </nav>
+  </div>
+</header>
+
+<router-outlet></router-outlet>

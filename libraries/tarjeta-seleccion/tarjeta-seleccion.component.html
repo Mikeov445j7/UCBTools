@@ -1,0 +1,41 @@
+<div
+  class="tarjeta-seleccion"
+  [class.seleccionada]="seleccionada"
+  [class.inactiva]="inactiva"
+  (click)="onClickTarjeta()"
+>
+  <div class="cinta-activa" *ngIf="seleccionada">
+    {{ textoCinta }}
+  </div>
+
+  <div class="top-resumen">
+    <span class="sigla">{{ tagIzquierdo }}</span>
+    <span class="sede">{{ tagDerecho }}</span>
+  </div>
+
+  <h4 class="titulo">{{ titulo }}</h4>
+  <p class="subtitulo" [class.cursiva]="subtituloCursiva" *ngIf="subtitulo">
+    {{ subtitulo }}
+  </p>
+
+  <div class="meta-resumen">
+    <div class="meta-fila-unica" *ngIf="!metaSecundarioIzquierda">
+      <span>{{ metaPrincipalEtiqueta }} <strong>{{ metaPrincipalValor }}</strong></span>
+      <span class="badge" [ngClass]="'badge-' + tipoBadge" *ngIf="badgeDerecha">
+        {{ badgeDerecha }}
+      </span>
+    </div>
+
+    <ng-container *ngIf="metaSecundarioIzquierda">
+      <div class="meta-fila-superior">
+        <span>{{ metaPrincipalEtiqueta }} <strong>{{ metaPrincipalValor }}</strong></span>
+      </div>
+      <div class="meta-fila-inferior">
+        <span class="texto-secundario">{{ metaSecundarioIzquierda }}</span>
+        <span class="badge" [ngClass]="'badge-' + tipoBadge" *ngIf="badgeDerecha">
+          {{ badgeDerecha }}
+        </span>
+      </div>
+    </ng-container>
+  </div>
+</div>

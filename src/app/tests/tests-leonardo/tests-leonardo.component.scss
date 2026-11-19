@@ -1,0 +1,125 @@
+.tests-leonardo {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.tests-leonardo__header,
+.prueba-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tests-leonardo__header {
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--borde-suave);
+
+  h1 {
+    margin: 0.25rem 0 0.5rem;
+    color: var(--ucb-azul);
+    font-size: 1.9rem;
+  }
+}
+
+.tests-leonardo__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ucb-dorado);
+}
+
+.tests-leonardo__subtitle,
+.prueba-card__desc {
+  margin: 0 0 1rem;
+  color: var(--texto-secundario);
+  font-size: 0.92rem;
+}
+
+.tests-leonardo__tabs,
+.demo-controles {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn,
+.btn-demo {
+  border: 1px solid var(--borde-suave);
+  background: var(--fondo-tarjeta);
+  color: var(--texto-principal);
+  padding: 0.6rem 1.05rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab-btn--activa {
+  background: var(--ucb-azul);
+  color: #fff;
+  border-color: var(--ucb-azul);
+}
+
+.btn-demo--activo {
+  background: var(--ucb-dorado-suave);
+  border-color: var(--ucb-dorado);
+  color: var(--ucb-azul);
+}
+
+.tests-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tarjetas-seleccion-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+}
+
+.prueba-card {
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-suave);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: var(--sombra-suave);
+}
+
+.prueba-card__head {
+  align-items: center;
+  margin-bottom: 0.5rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--ucb-azul);
+  }
+
+  code {
+    background: #eff6ff;
+    color: var(--ucb-azul);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+  }
+}
+
+.estado-bloque {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid var(--borde-suave);
+  font-size: 0.9rem;
+}
+
+.estado-bloque--error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}

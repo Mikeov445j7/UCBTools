@@ -1,0 +1,116 @@
+:host {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.resultado-tarjeta {
+  background: var(--fondo-tarjeta, #fff);
+  border-radius: 12px;
+  border: 1px solid var(--borde-suave, #e2e8f0);
+  box-shadow: var(--sombra-suave, 0 10px 25px -5px rgba(0, 0, 0, 0.08));
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+.tarjeta-decorador {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--ucb-azul, #0a2c5e), var(--ucb-dorado, #f5b41d));
+}
+
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.avatar-placeholder {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--ucb-azul, #0a2c5e);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  box-shadow: var(--sombra-flotante, 0 4px 10px rgba(15, 43, 91, 0.25));
+}
+
+.perfil-nombres h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--texto-principal, #1c1f26);
+}
+
+.badge-rol {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--ucb-dorado-suave, #fdeec4);
+  color: var(--ucb-azul, #0a2c5e);
+  border: 1px solid var(--ucb-dorado, #f5b41d);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.simple-grid,
+.seccion-bloque {
+  border-top: 1px solid var(--borde-suave, #e2e8f0);
+  padding-top: 1.2rem;
+}
+
+.seccion-bloque {
+  margin-top: 1.2rem;
+}
+
+.seccion-titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ucb-azul, #0a2c5e);
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--texto-secundario, #5c6470);
+  letter-spacing: 0.5px;
+}
+
+.value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--texto-principal, #1c1f26);
+  word-break: break-word;
+}
+
+.texto-alerta {
+  color: #e11d48 !important;
+  font-weight: 700 !important;
+  font-style: italic;
+}

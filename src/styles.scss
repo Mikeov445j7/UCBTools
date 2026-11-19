@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+/* Design tokens UCB y animaciones compartidas para librerías y pantallas */
+
+:root {
+  /* Marca */
+  --ucb-azul: #0a2c5e;
+  --ucb-azul-oscuro: #071d3d;
+  --ucb-dorado: #f5b41d;
+  --ucb-dorado-suave: #fdeec4;
+
+  /* Texto */
+  --texto-principal: #1c1f26;
+  --texto-secundario: #5c6470;
+
+  /* Superficies */
+  --fondo-app: #f4f6f9;
+  --fondo-tarjeta: #ffffff;
+  --borde-suave: #e2e8f0;
+
+  /* Sombras */
+  --sombra-suave: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  --sombra-flotante: 0 4px 10px rgba(15, 43, 91, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--fondo-app);
+  color: var(--texto-principal);
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.fade-in {
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
