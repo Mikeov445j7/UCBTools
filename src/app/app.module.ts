@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SelectorSedeComponent } from '../../libraries/selector-sede';
 import { AppRoutingModule } from './app-routing.module';
@@ -15,6 +16,7 @@ import { TestsModule } from './tests/tests.module';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     SelectorSedeComponent,
