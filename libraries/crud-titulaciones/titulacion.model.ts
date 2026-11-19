@@ -1,0 +1,60 @@
+export interface ActualizarTitulacionPayload {
+  id: number;
+  idActa: number;
+  idPersona: number;
+  tallerGrado: number;
+  notaTaller: number;
+  planEstudios: number;
+  actasDefensa: number;
+  observaciones: string;
+  habilitado: number;
+  resolucion: number;
+  solCompleta: number;
+  fechaSolicitud: string;
+  fechaUltModificacion: string;
+  estadoRegistro: number;
+  fechaRegistro: string;
+  usuarioRegistro: string;
+  estadoTramite: number;
+  timeline: string;
+  anulado: number;
+  cartonAnulado: number;
+  [key: string]: unknown;
+}
+
+export interface TramiteCompletoDto {
+  id?: number;
+  idTramite?: number;
+  idActa?: number;
+  idPersona?: number;
+  nombres?: string;
+  primerApellido?: string;
+  segundoApellido?: string;
+  documentoIdentidad?: string;
+  nombreCarrera?: string;
+  siglaCarrera?: string;
+  nomFacultad?: string;
+  nombreFacultad?: string;
+  nomRegional?: string;
+  siglaRegional?: string;
+  regional?: number;
+  fechaDefensa?: string;
+  estadoTramite?: number;
+  tallerGrado?: number;
+  notaTaller?: number;
+  planEstudios?: number;
+  actasDefensa?: number;
+  resolucion?: number;
+  solCompleta?: number;
+  estadoRegistro?: number;
+  habilitado?: number;
+  anulado?: number;
+  cartonAnulado?: number;
+  usuarioRegistro?: string;
+  timeline?: string;
+  observaciones?: string;
+  fechaSolicitud?: string;
+  fechaRegistro?: string;
+  fechaUltModificacion?: string;
+  [key: string]: unknown;
+}

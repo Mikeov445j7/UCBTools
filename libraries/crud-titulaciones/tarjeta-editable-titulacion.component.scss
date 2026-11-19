@@ -1,0 +1,128 @@
+.tarjeta-unificada {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid var(--borde-suave, #e2e8f0);
+  padding: 1.25rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.acciones-top {
+  margin-bottom: 1rem;
+}
+
+.btn-volver {
+  background: #f1f5f9;
+  border: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--ucb-azul, #0a2c5e);
+  &:hover { background: #e2e8f0; }
+}
+
+.bloque-editable {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--borde-suave, #e2e8f0);
+}
+
+.encabezado-editable {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ucb-azul, #0a2c5e);
+  }
+
+  .leyenda {
+    font-size: 0.78rem;
+    display: flex;
+    gap: 0.75rem;
+
+    .ok { color: #16a34a; }
+    .falta { color: #dc2626; font-weight: 600; }
+  }
+}
+
+.grid-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+
+  .span-2 {
+    grid-column: 1 / -1;
+  }
+}
+
+.campo-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--texto-secundario, #64748b);
+  }
+
+  input,
+  select {
+    padding: 0.5rem 0.65rem;
+    border: 1px solid var(--borde-suave, #e2e8f0);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    background: #ffffff;
+    transition: all 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--ucb-azul, #0a2c5e);
+    }
+  }
+
+  &.faltante {
+    input, select {
+      border-color: #fca5a5;
+      background: #fffafa;
+    }
+    label { color: #dc2626; }
+  }
+
+  &.bloqueado {
+    input {
+      background: #f1f5f9;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.pie-tarjeta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+.btn-primario {
+  background: var(--ucb-azul, #0a2c5e);
+  color: #ffffff;
+  padding: 0.65rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) { background: var(--ucb-azul-oscuro, #071d3d); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}

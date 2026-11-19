@@ -1,0 +1,135 @@
+<div class="tarjeta-unificada fade-in" *ngIf="titulacion">
+
+  <div class="acciones-top">
+    <button type="button" class="btn-volver" (click)="cerrar.emit()">← Cerrar Editor</button>
+  </div>
+
+  <!-- Componente Tarjeta Perfil reutilizable -->
+  <ucb-tarjeta-perfil
+    [persona]="titulacion"
+    [secciones]="seccionesTarjeta">
+  </ucb-tarjeta-perfil>
+
+  <form [formGroup]="formulario" (ngSubmit)="enviar()" class="bloque-editable">
+    <div class="encabezado-editable">
+      <h4>✏️ Parámetros Editables de la Titulación</h4>
+      <div class="leyenda">
+        <span class="ok">● Con dato</span>
+        <span class="falta">● Sin dato</span>
+      </div>
+    </div>
+
+    <!-- Grid de Inputs Editables -->
+    <div class="grid-inputs">
+      
+      <div class="campo-input" [class.faltante]="faltaValorControl('tallerGrado')">
+        <label>Taller de Grado</label>
+        <input type="number" formControlName="tallerGrado" placeholder="Sin dato">
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('notaTaller')">
+        <label>Nota Taller (0-100)</label>
+        <input type="number" formControlName="notaTaller" placeholder="Sin dato">
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('planEstudios')">
+        <label>Plan de Estudios</label>
+        <input type="number" formControlName="planEstudios" placeholder="Sin dato">
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('actasDefensa')">
+        <label>Actas de Defensa</label>
+        <input type="number" formControlName="actasDefensa" placeholder="Sin dato">
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('resolucion')">
+        <label>Resolución</label>
+        <input type="number" formControlName="resolucion" placeholder="Sin dato">
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('solCompleta')">
+        <label>Solicitud Completa</label>
+        <select formControlName="solCompleta">
+          <option [ngValue]="null">-- Sin dato --</option>
+          <option [ngValue]="0">0 - Incompleta</option>
+          <option [ngValue]="1">1 - Completa</option>
+        </select>
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('estadoTramite')">
+        <label>Estado Trámite</label>
+        <input type="number" formControlName="estadoTramite" placeholder="Sin dato">
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('estadoRegistro')">
+        <label>Estado Registro</label>
+        <input type="number" formControlName="estadoRegistro" placeholder="Sin dato">
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('habilitado')">
+        <label>Habilitado</label>
+        <select formControlName="habilitado">
+          <option [ngValue]="null">-- Sin dato --</option>
+          <option [ngValue]="1">1 - Habilitado</option>
+          <option [ngValue]="0">0 - Deshabilitado</option>
+        </select>
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('anulado')">
+        <label>Trámite Anulado</label>
+        <select formControlName="anulado">
+          <option [ngValue]="null">-- Sin dato --</option>
+          <option [ngValue]="0">0 - No (Vigente)</option>
+          <option [ngValue]="1">1 - Sí (Anulado)</option>
+        </select>
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('cartonAnulado')">
+        <label>Cartón Anulado</label>
+        <select formControlName="cartonAnulado">
+          <option [ngValue]="null">-- Sin dato --</option>
+          <option [ngValue]="0">0 - No</option>
+          <option [ngValue]="1">1 - Sí (Anulado)</option>
+        </select>
+      </div>
+
+      <div class="campo-input" [class.faltante]="faltaValorControl('usuarioRegistro')">
+        <label>Usuario Registro</label>
+        <input type="text" formControlName="usuarioRegistro" placeholder="Sin usuario">
+      </div>
+
+      <div class="campo-input span-2" [class.faltante]="faltaValorControl('timeline')">
+        <label>Timeline / Seguimiento</label>
+        <input type="text" formControlName="timeline" placeholder="Sin timeline registrado">
+      </div>
+
+      <div class="campo-input span-2" [class.faltante]="faltaValorControl('observaciones')">
+        <label>Observaciones</label>
+        <input type="text" formControlName="observaciones" placeholder="Sin observaciones registradas">
+      </div>
+
+      <div class="campo-input bloqueado" [class.faltante]="faltaValorControl('fechaSolicitud')">
+        <label>🔒 Fecha Solicitud / Defensa</label>
+        <input type="text" formControlName="fechaSolicitud" placeholder="Sin fecha">
+      </div>
+
+      <div class="campo-input bloqueado" [class.faltante]="faltaValorControl('fechaRegistro')">
+        <label>🔒 Fecha Registro</label>
+        <input type="text" formControlName="fechaRegistro" placeholder="Sin fecha">
+      </div>
+
+      <div class="campo-input bloqueado span-2" [class.faltante]="faltaValorControl('fechaUltModificacion')">
+        <label>🔒 Fecha Última Modificación</label>
+        <input type="text" formControlName="fechaUltModificacion" placeholder="Sin fecha">
+      </div>
+
+    </div>
+
+    <!-- Botón de Guardado -->
+    <div class="pie-tarjeta">
+      <button type="submit" class="btn-primario" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : '💾 Guardar Actualización' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,75 @@
+<div class="contenedor-titulaciones">
+
+  <!-- Barra superior compacta: Título + Buscador de Estudiante -->
+  <div class="barra-superior">
+    <div class="textos-titulo">
+      <h2 class="titulo-pagina">Gestión de Titulaciones</h2>
+      <p class="subtitulo-pagina">Busca al estudiante por C.I. y selecciona una titulación para editarla al costado.</p>
+    </div>
+
+    <div class="buscador-header">
+      <ucb-combobox-estudiantes
+        (estudianteSeleccionado)="recibirEstudiante($event)">
+      </ucb-combobox-estudiantes>
+    </div>
+  </div>
+
+  <!-- Estado de Carga o Error -->
+  <div class="estado-carga" *ngIf="cargandoLista">
+    <p>⏳ Consultando titulaciones para el C.I. {{ ciActual }}...</p>
+  </div>
+
+  <div class="alerta" *ngIf="!cargandoLista && mensajeError" [class.alerta-exito]="mensajeError.includes('✅')">
+    <span>{{ mensajeError }}</span>
+  </div>
+
+  <!-- Workspace Dinámico: Centrado vs Dividido -->
+  <div
+    class="workspace-titulaciones"
+    *ngIf="!cargandoLista && titulaciones.length > 0"
+    [class.modo-centrado]="!titulacionSeleccionada"
+    [class.modo-dividido]="!!titulacionSeleccionada">
+
+    <!-- COLUMNA IZQUIERDA: LISTA DE TITULACIONES -->
+    <div class="columna-lista">
+      <div class="cabecera-lista">
+        <h3>
+          Titulaciones de {{ estudianteSeleccionado?.['nombres'] }} ({{ titulaciones.length }})
+        </h3>
+        <span class="subtexto-lista" *ngIf="!titulacionSeleccionada">
+          Selecciona una tarjeta para abrir el editor a la derecha
+        </span>
+      </div>
+
+      <div class="contenedor-tarjetas">
+        <ucb-tarjeta-seleccion
+          class="item-tarjeta"
+          *ngFor="let item of titulaciones; let i = index"
+          [seleccionada]="indiceSeleccionado === i"
+          [inactiva]="indiceSeleccionado !== null && indiceSeleccionado !== i"
+          textoCinta="✓ SELECCIONADO"
+          [tagIzquierdo]="item.siglaCarrera || 'CARRERA'"
+          [tagDerecho]="(item.nomRegional || 'Sede') + (item.siglaRegional ? ' (' + item.siglaRegional + ')' : '')"
+          [titulo]="item.nombreCarrera || 'Carrera Universitaria'"
+          [subtitulo]="item.nomFacultad || item.nombreFacultad || 'Facultad UCB'"
+          metaPrincipalEtiqueta="Defensa:"
+          [metaPrincipalValor]="item.fechaDefensa || 'Sin fecha'"
+          [badgeDerecha]="'Estado ' + (item.estadoTramite ?? 0)"
+          tipoBadge="amarillo"
+          (seleccionar)="seleccionarTitulacion(item, i)">
+        </ucb-tarjeta-seleccion>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: TARJETA UNIFICADA CON CAMPOS EDITABLES -->
+    <div class="columna-detalle" *ngIf="titulacionSeleccionada">
+      <ucb-tarjeta-editable-titulacion
+        [titulacion]="titulacionSeleccionada"
+        [guardando]="guardandoFormulario"
+        (guardar)="procesarActualizacion($event)"
+        (cerrar)="cerrarPanelDerecho()">
+      </ucb-tarjeta-editable-titulacion>
+    </div>
+
+  </div>
+</div>
