@@ -37,18 +37,27 @@ UCBVANTools/
 │       ├── selector-sede.component.spec.ts
 │       └── README.md
 ├── src/
-│   └── app/
-│       ├── pages/
-│       │   └── home/
-│       │       ├── home.component.ts
-│       │       ├── home.component.html
-│       │       └── home.component.scss
-│       ├── services/
-│       │   └── catalogo.service.ts
-│       ├── app.component.ts
-│       ├── app.component.html
-│       ├── app.module.ts
-│       └── app-routing.module.ts
+│   ├── app/
+│   │   ├── pages/
+│   │   │   └── home/
+│   │   │       ├── home.component.ts
+│   │   │       ├── home.component.html
+│   │   │       └── home.component.scss
+│   │   ├── services/
+│   │   │   └── catalogo.service.ts
+│   │   ├── app.component.ts
+│   │   ├── app.component.html
+│   │   ├── app.module.ts
+│   │   └── app-routing.module.ts
+│   ├── assets/                       # Imágenes y otros recursos estáticos
+│   ├── environments/
+│   │   ├── environment.ts            # Configuración base/producción
+│   │   ├── environment.development.ts
+│   │   └── environment.production.ts
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.scss
+├── public/                           # Archivos servidos desde la raíz, como favicon.ico
 ├── GUIA-ARQUITECTURA.md
 ├── README.md
 ├── package.json
@@ -77,7 +86,16 @@ La aplicacion de desarrollo estara disponible en `http://localhost:4200/`.
 
 ```bash
 npm run build
-npm test -- --watch=false
 ```
 
-Las pruebas usan Karma y requieren un navegador Chrome disponible.
+Durante el desarrollo se verifica la compilación desde la consola. Las pruebas (specs/Karma) se dejan para la etapa de preparación para producción.
+
+## Entornos y recursos estáticos
+
+- `src/environments/environment.ts` es la configuración base; Angular la sustituye según la configuración de compilación.
+- `src/environments/environment.development.ts` se usa al compilar con `--configuration development`.
+- `src/environments/environment.production.ts` se usa en la compilación de producción predeterminada.
+- `src/assets/` contiene imágenes, iconos y otros recursos de la aplicación; se acceden desde la aplicación con rutas como `assets/imagenes/logo.svg`.
+- `public/` se conserva para archivos que deben copiarse a la raíz del sitio, como `favicon.ico`.
+
+Los archivos de environment se incluyen en el código del navegador; no guardes contraseñas, claves privadas ni secretos en ellos.
