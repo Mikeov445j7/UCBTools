@@ -1,0 +1,89 @@
+<div class="contenedor-actas">
+
+  <!-- Barra Superior: Título + Buscador de Estudiante por CI -->
+  <div class="barra-superior">
+    <div class="textos-titulo">
+      <h2 class="titulo-pagina">Consulta y Gestión de Actas</h2>
+      <p class="subtitulo-pagina">Busca al estudiante por C.I. y selecciona un acta de defensa para visualizar su expediente detallado.</p>
+    </div>
+
+    <div class="buscador-header">
+      <ucb-combobox-estudiantes
+        (estudianteSeleccionado)="recibirEstudiante($event)">
+      </ucb-combobox-estudiantes>
+    </div>
+  </div>
+
+  <!-- Estado de Carga de la Lista -->
+  <div class="estado-carga" *ngIf="cargandoLista">
+    <p>⏳ Consultando actas de defensa para el C.I. {{ ciActual }}...</p>
+  </div>
+
+  <!-- Alerta de Error -->
+  <div class="alerta-error" *ngIf="!cargandoLista && mensajeError">
+    <span>⚠️ {{ mensajeError }}</span>
+  </div>
+
+  <!-- WORKSPACE DINÁMICO -->
+  <div
+    class="workspace-actas"
+    *ngIf="!cargandoLista && actas.length > 0"
+    [class.modo-centrado]="indiceSeleccionado === null"
+    [class.modo-dividido]="indiceSeleccionado !== null">
+
+    <!-- COLUMNA IZQUIERDA (O CENTRAL): LISTA DE ACTAS CON COMPONENTE REUTILIZABLE -->
+    <div class="columna-lista">
+      <div class="cabecera-lista">
+        <h3>
+          Actas de {{ actas[0].nombres }} {{ actas[0].primerApellido }} ({{ actas.length }})
+        </h3>
+        <span class="subtexto-lista" *ngIf="indiceSeleccionado === null">
+          Selecciona un acta para cargar sus detalles a la derecha
+        </span>
+      </div>
+
+      <div class="contenedor-tarjetas">
+        <ucb-tarjeta-seleccion
+          class="item-tarjeta"
+          *ngFor="let item of actas; let i = index"
+          [seleccionada]="indiceSeleccionado === i"
+          [inactiva]="indiceSeleccionado !== null && indiceSeleccionado !== i"
+          textoCinta="✓ ACTA SELECCIONADA"
+          [tagIzquierdo]="(item.sigla || 'ACTA') + ' · N° ' + (item.numeroTesis || 'S/N')"
+          [tagDerecho]="item.nomRegional || 'Sede UCB'"
+          [titulo]="item.nombreCarrera || 'Carrera Universitaria'"
+          [subtitulo]="limpiarTexto(item.nombreTesis)"
+          [subtituloCursiva]="true"
+          metaPrincipalEtiqueta="Defensa:"
+          [metaPrincipalValor]="formatearFechaHora(item.fechaDefensa).texto"
+          [metaSecundarioIzquierda]="'📍 ' + (item.lugarDefensa || 'Sin lugar')"
+          [badgeDerecha]="'Nota: ' + (item.nota ?? 'S/N') + ' pts.'"
+          tipoBadge="verde"
+          (seleccionar)="seleccionarActa(item, i)">
+        </ucb-tarjeta-seleccion>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: DETALLE DEL ACTA EN <ucb-tarjeta-perfil> -->
+    <div class="columna-detalle" *ngIf="indiceSeleccionado !== null">
+      
+      <div class="acciones-top">
+        <button type="button" class="btn-volver" (click)="cerrarDetalle()">
+          ← Cerrar detalle y volver a centrar
+        </button>
+      </div>
+
+      <div class="estado-carga-detalle" *ngIf="cargandoDetalle">
+        <p>⏳ Cargando información detallada del Acta #{{ actaResumenSeleccionada?.id }}...</p>
+      </div>
+
+      <ucb-tarjeta-perfil
+        *ngIf="!cargandoDetalle && actaDetalleCompleta"
+        [persona]="actaDetalleCompleta"
+        [secciones]="seccionesTarjeta">
+      </ucb-tarjeta-perfil>
+
+    </div>
+
+  </div>
+</div>
