@@ -1,0 +1,98 @@
+<div class="tarjeta-formulario fade-in">
+  <div class="cabecera-formulario">
+    <div class="icono-cabecera">{{ esEdicion ? '✏️' : '📋' }}</div>
+    <div class="textos-cabecera">
+      <h3 class="titulo-formulario">
+        {{ esEdicion ? 'Editar Nominación de Título' : 'Nueva Nominación de Título' }}
+      </h3>
+      <p class="subtitulo-formulario">
+        {{ esEdicion ? 'Actualiza los campos permitidos por el sistema central.' : 'Completa todos los datos requeridos para registrar una nueva nominación.' }}
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="formulario" (ngSubmit)="enviarDatos()">
+
+    <!-- GRUPO 1: DATOS GENERALES -->
+    <div class="grupo-seccion">
+      <div class="grupo-header">
+        <span class="grupo-icono">📌</span>
+        <h4>Información del Título</h4>
+      </div>
+      <div class="grid-formulario">
+        <div class="campo campo-completo">
+          <label>Descripción de la Nominación *</label>
+          <input type="text" formControlName="descripcion" class="input-form" placeholder="Ej. Licenciatura en Ingeniería de Sistemas">
+        </div>
+
+        <div class="campo campo-completo">
+          <label>Provisión Nacional *</label>
+          <input type="text" formControlName="provisionNacional" class="input-form" placeholder="Ej. Ingeniero de Sistemas">
+        </div>
+
+        <div class="campo">
+          <label>Nombre Alterno</label>
+          <input type="text" formControlName="nombreAlterno" class="input-form" placeholder="Opcional">
+        </div>
+
+        <div class="campo">
+          <label>Código de Carrera *</label>
+          <input type="text" formControlName="codigoCarrera" class="input-form" placeholder="Ej. 110">
+        </div>
+      </div>
+    </div>
+
+    <!-- GRUPO 2: VINCULACIÓN INSTITUCIONAL -->
+    <div class="grupo-seccion">
+      <div class="grupo-header">
+        <span class="grupo-icono">🏛️</span>
+        <h4>Vinculación Institucional</h4>
+      </div>
+      <div class="grid-formulario">
+        <div class="campo">
+          <label>ID Subdepartamento *</label>
+          <input type="number" formControlName="idSubdepto" class="input-form" placeholder="ID Subdepartamento">
+        </div>
+
+        <div class="campo">
+          <label>Nombre Carrera *</label>
+          <input type="text" formControlName="nombreCarrera" class="input-form" placeholder="Ej. Ingeniería de Sistemas">
+        </div>
+
+        <div class="campo">
+          <label>ID Sede *</label>
+          <input type="number" formControlName="idSede" class="input-form" placeholder="Ej. 1 (La Paz)">
+        </div>
+
+        <div class="campo">
+          <label>Sede (Texto)</label>
+          <input type="text" formControlName="sede" class="input-form" placeholder="Ej. Regional La Paz">
+        </div>
+
+        <div class="campo">
+          <label>Sexo / Género (Cód) *</label>
+          <select formControlName="sexo" class="input-form">
+            <option [ngValue]="null" disabled>Selecciona el género</option>
+            <option [ngValue]="1">1 - Masculino</option>
+            <option [ngValue]="2">2 - Femenino</option>
+            <option [ngValue]="0">0 - Neutro / General</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label>Usuario Registro</label>
+          <input type="text" formControlName="usuarioRegistro" class="input-form" placeholder="Opcional">
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONERA -->
+    <div class="acciones-formulario">
+      <button type="button" class="btn btn-cancelar" (click)="cancelar.emit()">Cancelar</button>
+      <button type="submit" class="btn btn-guardar" [disabled]="formulario.invalid">
+        {{ esEdicion ? 'Actualizar Nominación' : 'Crear Nominación' }}
+      </button>
+    </div>
+
+  </form>
+</div>

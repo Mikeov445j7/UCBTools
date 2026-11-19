@@ -1,0 +1,83 @@
+<div class="contenedor-nominaciones">
+
+  <!-- CABECERA -->
+  <div class="barra-superior">
+    <div class="textos-titulo">
+      <h2 class="titulo-pagina">Gestión y Títulos de Nominaciones</h2>
+      <p class="subtitulo-pagina">Administra las nominaciones académicas por subdepartamento o estudiante.</p>
+    </div>
+
+    <div class="acciones-header">
+      <button
+        *ngIf="vistaActual === 'buscar'"
+        type="button"
+        class="btn-nuevo"
+        (click)="cambiarVista('crear')">
+        ➕ Nueva Nominación
+      </button>
+
+      <button
+        *ngIf="vistaActual !== 'buscar'"
+        type="button"
+        class="btn-volver"
+        (click)="cambiarVista('buscar')">
+        ← Volver a Búsqueda
+      </button>
+    </div>
+  </div>
+
+  <!-- ALERTA / MENSAJE -->
+  <div class="alerta" *ngIf="mensajeAlerta" [class.alerta-exito]="mensajeAlerta.includes('✅')">
+    <span>{{ mensajeAlerta }}</span>
+  </div>
+
+  <!-- VISTA BUSCAR -->
+  <div *ngIf="vistaActual === 'buscar'" class="vista-buscar">
+    <div class="buscador-container">
+      <label class="label-buscador">Buscar Estudiante por C.I. o Nombre para cargar su Subdepartamento:</label>
+      <ucb-combobox-estudiantes (estudianteSeleccionado)="recibirEstudiante($event)"></ucb-combobox-estudiantes>
+    </div>
+
+    <div class="estado-carga" *ngIf="buscando">
+      <p>⏳ Consultando nominaciones del subdepartamento...</p>
+    </div>
+
+    <!-- LISTADO DE TARJETAS -->
+    <div class="lista-nominaciones" *ngIf="!buscando && nominacionesEncontradas.length > 0">
+      <div class="card-wrapper" *ngFor="let item of nominacionesEncontradas">
+        <ucb-tarjeta-perfil
+          [persona]="item.raw"
+          [secciones]="item.secciones">
+        </ucb-tarjeta-perfil>
+
+        <div class="acciones-tarjeta">
+          <button type="button" class="btn-accion btn-editar" (click)="prepararEdicion(item.raw)">
+            ✏️ Editar
+          </button>
+          <button type="button" class="btn-accion btn-eliminar" (click)="eliminarNominacionAPI(item.raw['id'])">
+            🗑️ Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA CREAR -->
+  <div *ngIf="vistaActual === 'crear'" class="vista-crear">
+    <ucb-formulario-nominacion
+      [idSubdeptoDefecto]="idSubdeptoActual"
+      (guardar)="guardarNominacionAPI($event)"
+      (cancelar)="cambiarVista('buscar')">
+    </ucb-formulario-nominacion>
+  </div>
+
+  <!-- VISTA EDITAR -->
+  <div *ngIf="vistaActual === 'editar'" class="vista-editar">
+    <ucb-formulario-nominacion
+      [nominacionAEditar]="nominacionAEditarTemporal"
+      (guardar)="actualizarNominacionAPI($event)"
+      (cancelar)="cambiarVista('buscar')">
+    </ucb-formulario-nominacion>
+  </div>
+
+</div>
