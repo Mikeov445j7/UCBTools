@@ -1,0 +1,61 @@
+<div class="overlay" *ngIf="visible" (click)="cerrar.emit()">
+  <section
+    #dialogo
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-labelledby]="idTitulo"
+    [attr.aria-busy]="cargando"
+    (click)="$event.stopPropagation()"
+    (keydown)="foco.atrapar($event, dialogo)"
+  >
+    <header class="encabezado">
+      <div class="titulo-bloque">
+        <h2 [id]="idTitulo">
+          {{ autoridad && !cargando && !error ? valor(autoridad.nombreCompleto) : 'Detalle de la autoridad' }}
+        </h2>
+        <div class="badges" *ngIf="autoridad && !cargando && !error">
+          <span class="badge-rol">{{ valor(autoridad.cargo) }}</span>
+          <span class="badge-interino" *ngIf="autoridad.interino">Interino</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-cerrar" aria-label="Cerrar" (click)="cerrar.emit()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <div class="cuerpo">
+      <p class="estado" role="status" *ngIf="cargando">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Cargando detalle de la autoridad...</span>
+      </p>
+
+      <div class="estado-error" role="alert" *ngIf="error && !cargando">
+        <p>No se pudo cargar el detalle de la autoridad.</p>
+        <div class="estado-acciones">
+          <button type="button" class="btn-reintentar" (click)="reintentar.emit()">Reintentar</button>
+          <button type="button" class="btn btn-cancelar" (click)="cerrar.emit()">Cerrar</button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="autoridad && !cargando && !error">
+        <dl class="grid">
+          <div class="dato" *ngFor="let item of informacion; trackBy: trackByEtiqueta">
+            <dt class="label">{{ item.etiqueta }}</dt>
+            <dd class="value">{{ item.valor }}</dd>
+          </div>
+        </dl>
+
+        <h3 class="subtitulo">Identificadores</h3>
+        <dl class="grid grid-ids">
+          <div class="dato" *ngFor="let item of identificadores; trackBy: trackByEtiqueta">
+            <dt class="label">{{ item.etiqueta }}</dt>
+            <dd class="value">{{ item.valor }}</dd>
+          </div>
+        </dl>
+      </ng-container>
+    </div>
+  </section>
+</div>

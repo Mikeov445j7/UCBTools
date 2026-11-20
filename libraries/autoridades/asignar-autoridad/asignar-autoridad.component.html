@@ -1,0 +1,113 @@
+<div class="overlay" (click)="cerrar.emit()">
+  <section
+    #dialogo
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-labelledby]="idBase + '-titulo'"
+    (click)="$event.stopPropagation()"
+    (keydown)="foco.atrapar($event, dialogo)"
+  >
+    <header class="encabezado">
+      <h2 [id]="idBase + '-titulo'">Asignar autoridad</h2>
+      <button type="button" class="btn-cerrar" aria-label="Cerrar" (click)="cerrar.emit()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <form class="formulario" [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+      <div class="cuerpo">
+        <ucb-campo-combo
+          [combo]="comboAutoridad"
+          etiqueta="Autoridad"
+          placeholder="Seleccione una autoridad..."
+          ariaToggle="Mostrar autoridades"
+          mensajeCargando="Cargando autoridades..."
+          mensajeError="No se pudieron cargar las autoridades."
+        ></ucb-campo-combo>
+
+        <section
+          class="detalle-asignacion"
+          *ngIf="elegida"
+          [attr.aria-busy]="cargandoDetalle"
+          [attr.aria-labelledby]="idBase + '-detalle'"
+        >
+          <h3 class="solo-lectores" [id]="idBase + '-detalle'">Detalle de la autoridad elegida</h3>
+
+          <p class="estado" role="status" *ngIf="cargandoDetalle">
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Cargando detalle de la autoridad...</span>
+          </p>
+
+          <div class="estado-error" role="alert" *ngIf="errorDetalle && !cargandoDetalle">
+            <p>No se pudo cargar el detalle de la autoridad.</p>
+            <button type="button" class="btn-reintentar" (click)="reintentarDetalle.emit()">Reintentar</button>
+          </div>
+
+          <ng-container *ngIf="detalle && !cargandoDetalle && !errorDetalle">
+            <div class="detalle-encabezado">
+              <p class="detalle-nombre">{{ valor(detalle.nombreCompleto) }}</p>
+              <div class="badges">
+                <span class="badge-rol">{{ valor(detalle.cargo) }}</span>
+                <span class="badge-interino" *ngIf="detalle.interino">Interino</span>
+              </div>
+            </div>
+
+            <div class="grid">
+              <ng-container *ngFor="let item of informacion; trackBy: trackByEtiqueta">
+                <div class="campo ancho-completo" *ngIf="item.esNombre">
+                  <label class="label" [for]="idBase + '-nombre'">{{ item.etiqueta }}</label>
+                  <input
+                    class="input"
+                    type="text"
+                    autocomplete="off"
+                    formControlName="nombreCompleto"
+                    placeholder="Ej. Juan Pérez Gómez"
+                    [id]="idBase + '-nombre'"
+                  />
+                </div>
+
+                <ucb-campo-combo
+                  *ngIf="item.esGrado"
+                  [combo]="comboGrado"
+                  [etiqueta]="item.etiqueta"
+                  placeholder="Seleccione un grado..."
+                  ariaToggle="Mostrar grados académicos"
+                ></ucb-campo-combo>
+
+                <ucb-campo-combo
+                  *ngIf="item.esCargo"
+                  [combo]="comboCargo"
+                  [etiqueta]="item.etiqueta"
+                  placeholder="Seleccione un cargo..."
+                  ariaToggle="Mostrar cargos"
+                  mensajeCargando="Cargando cargos..."
+                  mensajeError="No se pudieron cargar los cargos."
+                ></ucb-campo-combo>
+
+                <div class="dato" *ngIf="!item.esNombre && !item.esGrado && !item.esCargo">
+                  <span class="label">{{ item.etiqueta }}</span>
+                  <span class="value">{{ item.valor }}</span>
+                </div>
+              </ng-container>
+            </div>
+
+            <h4 class="subtitulo">Identificadores</h4>
+            <dl class="grid grid-ids">
+              <div class="dato" *ngFor="let item of identificadores; trackBy: trackByEtiqueta">
+                <dt class="label">{{ item.etiqueta }}</dt>
+                <dd class="value">{{ item.valor }}</dd>
+              </div>
+            </dl>
+          </ng-container>
+        </section>
+      </div>
+
+      <footer class="pie">
+        <button type="button" class="btn btn-cancelar" (click)="cerrar.emit()">Cancelar</button>
+        <button type="submit" class="btn btn-guardar">Guardar</button>
+      </footer>
+    </form>
+  </section>
+</div>

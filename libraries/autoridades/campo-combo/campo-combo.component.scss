@@ -1,0 +1,12 @@
+@use '../autoridades-compartido' as ac;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+@include ac.etiqueta;
+@include ac.campo;
+@include ac.input;
+@include ac.combo;
+@include ac.solo-lectores;

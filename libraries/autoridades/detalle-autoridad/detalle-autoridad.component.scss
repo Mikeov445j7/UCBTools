@@ -1,0 +1,10 @@
+@use '../autoridades-compartido' as ac;
+
+@include ac.overlay-modal;
+@include ac.modal;
+@include ac.encabezado-modal;
+@include ac.etiqueta;
+@include ac.badges;
+@include ac.grid-datos;
+@include ac.estados;
+@include ac.pie-botones;

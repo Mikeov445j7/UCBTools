@@ -11,6 +11,10 @@ const routes: Routes = [
   { path: 'tests-leonardo', component: TestsLeonardoComponent },
   { path: 'tests-mike', component: TestMikeComponent },
   { path: 'pruebas', component: PruebasComponent },
+  {
+    path: 'test-adrian',
+    loadChildren: () => import('./testAdrian/test-adrian.module').then((m) => m.TestAdrianModule),
+  },
   { path: '**', redirectTo: '' },
 ];
 

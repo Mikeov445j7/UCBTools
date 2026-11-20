@@ -1,0 +1,73 @@
+@use '../autoridades-compartido' as ac;
+
+:host {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+@include ac.estados;
+@include ac.solo-lectores;
+
+.lista-autoridades {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.celda-autoridad {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font: inherit;
+  text-align: left;
+  color: #0f172a;
+  background: white;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: #93c5fd;
+  }
+
+  &:focus-visible {
+    @include ac.foco-visible;
+  }
+
+  &.activo {
+    background: #dbeafe;
+    border-color: #3b82f6;
+  }
+}
+
+.nombre {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.cargo {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.sede {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celda-autoridad {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

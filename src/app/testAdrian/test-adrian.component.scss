@@ -1,0 +1,160 @@
+.test-adrian {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.test-adrian__hero {
+  margin-bottom: 2rem;
+  text-align: center;
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #0f172a;
+  }
+}
+
+.test-adrian__eyebrow {
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.test-adrian__descripcion {
+  max-width: 640px;
+  margin: 0.75rem auto 0;
+  color: #475569;
+  font-size: 1.05rem;
+}
+
+.test-adrian__panel {
+  margin: 0 auto 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #dfe7f1;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+}
+
+.test-adrian__panel-titulo {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  color: #0f172a;
+}
+
+.test-adrian__marco {
+  overflow: hidden;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+}
+
+.test-adrian__marco ucb-marco-aplicacion {
+  height: 480px;
+}
+
+.test-adrian__seleccion {
+  margin-top: 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+
+  h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0;
+    color: #1e293b;
+  }
+}
+
+.test-adrian__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.test-adrian__regional {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.test-adrian__boton {
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  color: #0f172a;
+  background: #dbeafe;
+  border: 1px solid #3b82f6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #2563eb;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.test-adrian__boton--secundario {
+  color: #0f172a;
+  background: white;
+  border: 1px solid #dbeafe;
+
+  &:hover {
+    background: white;
+    border-color: #93c5fd;
+  }
+
+  &:disabled:hover {
+    border-color: #dbeafe;
+  }
+}
+
+@media (max-width: 640px) {
+  .test-adrian {
+    padding: 2rem 1rem 3rem;
+  }
+
+  .test-adrian__descripcion {
+    font-size: 1rem;
+  }
+
+  .test-adrian__panel {
+    padding: 1rem;
+  }
+
+  .test-adrian__marco ucb-marco-aplicacion {
+    height: 520px;
+  }
+
+  .test-adrian__barra {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .test-adrian__regional {
+    flex: 0 0 auto;
+  }
+
+  .test-adrian__boton {
+    width: 100%;
+  }
+}
