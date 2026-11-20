@@ -1,0 +1,20 @@
+<nav [attr.aria-label]="etiqueta">
+  <ul class="menu-tarjetas__grid">
+    <li *ngFor="let item of items; let i = index; trackBy: trackById" class="menu-tarjetas__elemento">
+      <a
+        class="menu-tarjetas__tarjeta"
+        routerLinkActive="menu-tarjetas__tarjeta--activa"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [routerLink]="item.ruta"
+        [attr.data-tooltip]="item.descripcion"
+        [style.animation-delay.ms]="i * 60"
+      >
+        <span class="menu-tarjetas__icono" aria-hidden="true">
+          <mat-icon>{{ item.icono }}</mat-icon>
+        </span>
+        <span class="menu-tarjetas__texto">{{ item.descripcion }}</span>
+      </a>
+    </li>
+  </ul>
+</nav>

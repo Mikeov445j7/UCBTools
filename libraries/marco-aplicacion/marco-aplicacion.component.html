@@ -1,0 +1,33 @@
+<div class="marco-aplicacion">
+  <header class="marco-aplicacion__header" [attr.role]="esPrincipal ? null : 'none'">
+    <p class="marco-aplicacion__titulo-wrap">
+      <span class="marco-aplicacion__titulo">{{ titulo }}</span>
+      <span *ngIf="!enInicio && seccionActual" class="marco-aplicacion__seccion">
+        <span aria-hidden="true">/ </span><span class="marco-aplicacion__solo-lectores">, sección actual: </span>{{ seccionActual.descripcion }}
+      </span>
+    </p>
+
+    <a *ngIf="!enInicio" class="marco-aplicacion__volver" [routerLink]="rutaInicio">
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      <span>Volver al menú</span>
+    </a>
+  </header>
+
+  <main *ngIf="esPrincipal; else contenidoIncrustado" class="marco-aplicacion__main" tabindex="-1">
+    <ng-container *ngTemplateOutlet="contenido"></ng-container>
+  </main>
+
+  <ng-template #contenidoIncrustado>
+    <div class="marco-aplicacion__main">
+      <ng-container *ngTemplateOutlet="contenido"></ng-container>
+    </div>
+  </ng-template>
+
+  <ng-template #contenido>
+    <ng-content></ng-content>
+  </ng-template>
+
+  <footer class="marco-aplicacion__footer" [attr.role]="esPrincipal ? null : 'none'">
+    <p>© {{ anioActual }} {{ titulo }}</p>
+  </footer>
+</div>

@@ -1,0 +1,113 @@
+<div class="overlay" (click)="cerrar.emit()">
+  <section
+    #dialogo
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-labelledby]="idBase + '-titulo'"
+    (click)="$event.stopPropagation()"
+    (keydown)="foco.atrapar($event, dialogo)"
+  >
+    <header class="encabezado">
+      <div class="titulo-bloque">
+        <h2 [id]="idBase + '-titulo'">
+          <span class="solo-lectores">Editar autoridad: </span>{{ autoridad ? valor(autoridad.nombreCompleto) : 'Editar autoridad' }}
+        </h2>
+        <div class="badges" *ngIf="autoridad">
+          <span class="badge-edicion">Editando</span>
+          <span class="badge-rol">{{ valor(autoridad.cargo) }}</span>
+          <span class="badge-interino" *ngIf="autoridad.interino">Interino</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-cerrar" aria-label="Cerrar" (click)="cerrar.emit()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <form *ngIf="autoridad" class="formulario" [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+      <div class="cuerpo">
+        <div class="grid">
+          <div class="campo ancho-completo">
+            <label class="label" [for]="idBase + '-nombreCompleto'">Nombre completo</label>
+            <input
+              class="input"
+              type="text"
+              autocomplete="off"
+              formControlName="nombreCompleto"
+              placeholder="Ej. Juan Pérez Gómez"
+              [id]="idBase + '-nombreCompleto'"
+            />
+          </div>
+
+          <ucb-campo-combo
+            [combo]="comboGrado"
+            etiqueta="Grado académico"
+            placeholder="Seleccione un grado..."
+            ariaToggle="Mostrar grados académicos"
+          ></ucb-campo-combo>
+
+          <ng-container *ngTemplateOutlet="campoTexto; context: { $implicit: campoNombreSgt }"></ng-container>
+
+          <ucb-campo-combo
+            [combo]="comboCargo"
+            etiqueta="Cargo"
+            placeholder="Seleccione un cargo..."
+            ariaToggle="Mostrar cargos"
+            mensajeCargando="Cargando cargos..."
+            mensajeError="No se pudieron cargar los cargos."
+          ></ucb-campo-combo>
+
+          <div class="campo">
+            <span class="label" [id]="idBase + '-interino'">Interino</span>
+            <label class="switch-fila">
+              <input
+                type="checkbox"
+                role="switch"
+                class="switch-input"
+                formControlName="interino"
+                [attr.aria-labelledby]="idBase + '-interino'"
+              />
+              <span class="switch-pista" aria-hidden="true">
+                <span class="switch-perilla"></span>
+              </span>
+              <span class="switch-texto" aria-hidden="true">{{ form.controls.interino.value ? 'Sí' : 'No' }}</span>
+            </label>
+          </div>
+
+          <ng-container *ngFor="let campo of camposUbicacion">
+            <ng-container *ngTemplateOutlet="campoTexto; context: { $implicit: campo }"></ng-container>
+          </ng-container>
+        </div>
+
+        <h3 class="subtitulo">Identificadores</h3>
+        <dl class="grid grid-ids">
+          <div class="dato" *ngFor="let item of identificadores; trackBy: trackByEtiqueta">
+            <dt class="label">{{ item.etiqueta }}</dt>
+            <dd class="value">{{ item.valor }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <footer class="pie">
+        <button type="button" class="btn btn-cancelar" (click)="cerrar.emit()">Cancelar</button>
+        <button type="submit" class="btn btn-guardar">Guardar cambios</button>
+      </footer>
+    </form>
+  </section>
+</div>
+
+<ng-template #campoTexto let-campo>
+  <div class="campo" [formGroup]="form">
+    <label class="label" [for]="idBase + '-' + campo.control">{{ campo.etiqueta }}</label>
+    <input
+      class="input"
+      type="text"
+      autocomplete="off"
+      [id]="idBase + '-' + campo.control"
+      [formControlName]="campo.control"
+      [placeholder]="campo.placeholder"
+    />
+  </div>
+</ng-template>

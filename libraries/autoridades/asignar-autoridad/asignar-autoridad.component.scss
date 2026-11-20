@@ -1,0 +1,50 @@
+@use '../autoridades-compartido' as ac;
+
+@include ac.overlay-modal;
+@include ac.modal;
+@include ac.encabezado-modal;
+@include ac.etiqueta;
+@include ac.campo;
+@include ac.input;
+@include ac.badges;
+@include ac.grid-datos;
+@include ac.estados;
+@include ac.pie-botones;
+@include ac.solo-lectores;
+
+.modal {
+  overflow: hidden;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.detalle-asignacion {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #dfe7f1;
+  border-radius: 16px;
+}
+
+.detalle-encabezado {
+  margin-bottom: 1.1rem;
+}
+
+.detalle-nombre {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .detalle-asignacion {
+    padding: 1rem;
+  }
+}

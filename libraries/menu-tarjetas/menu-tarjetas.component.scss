@@ -1,0 +1,234 @@
+.menu-tarjetas__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-tarjetas__elemento {
+  display: flex;
+  min-width: 0;
+}
+
+.menu-tarjetas__tarjeta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 2.5rem 1.25rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  background: white;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  animation: menuTarjetasEntrada 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-4px);
+    border-color: #93c5fd;
+
+    .menu-tarjetas__icono {
+      background: #3b82f6;
+      transform: scale(1.12) rotate(-6deg);
+
+      mat-icon {
+        color: #ffffff;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 3px;
+  }
+
+  &--activa {
+    background: #dbeafe;
+    border-color: #3b82f6;
+  }
+
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    width: max-content;
+    max-width: min(220px, 80vw);
+    transform: translateX(-50%) translateY(6px);
+    background: #0f172a;
+    color: #ffffff;
+    padding: 0.4rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: normal;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 10;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #0f172a;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  &:hover::before,
+  &:focus-visible::before {
+    opacity: 1;
+  }
+}
+
+.menu-tarjetas__icono {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #e0f2fe;
+  transition: background 0.2s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #075985;
+    transition: transform 0.3s ease;
+  }
+}
+
+.menu-tarjetas__texto {
+  font-size: 1.1rem;
+  font-weight: 600;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+@keyframes menuTarjetasEntrada {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(15px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-tarjetas__tarjeta {
+    animation: none;
+    opacity: 1;
+
+    &:hover,
+    &:focus-visible {
+      transform: none;
+    }
+
+    &:hover .menu-tarjetas__icono,
+    &:focus-visible .menu-tarjetas__icono {
+      transform: none;
+    }
+
+    &::after {
+      transition: none;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .menu-tarjetas__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .menu-tarjetas__tarjeta {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .menu-tarjetas__icono {
+    width: 52px;
+    height: 52px;
+
+    mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  .menu-tarjetas__texto {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .menu-tarjetas__grid {
+    gap: 0.6rem;
+  }
+
+  .menu-tarjetas__tarjeta {
+    gap: 0.5rem;
+    padding: 1rem 0.35rem;
+
+    &::after,
+    &::before {
+      display: none;
+    }
+  }
+
+  .menu-tarjetas__icono {
+    width: 44px;
+    height: 44px;
+
+    mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .menu-tarjetas__texto {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .menu-tarjetas__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

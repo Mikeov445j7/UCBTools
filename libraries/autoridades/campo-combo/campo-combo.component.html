@@ -1,0 +1,77 @@
+<div class="campo">
+  <label class="label" [class.solo-lectores]="ocultarEtiqueta" [id]="combo.id + '-etiqueta'" [for]="combo.id">
+    {{ etiqueta }}
+  </label>
+
+  <div class="combo">
+    <input
+      #entrada
+      class="input combo-input"
+      type="text"
+      role="combobox"
+      autocomplete="off"
+      aria-autocomplete="list"
+      [id]="combo.id"
+      [placeholder]="placeholder"
+      [attr.aria-controls]="combo.abierto ? combo.id + '-lista' : null"
+      [attr.aria-expanded]="combo.abierto"
+      [attr.aria-activedescendant]="combo.abierto && combo.indice >= 0 ? combo.id + '-op-' + combo.indice : null"
+      [attr.aria-describedby]="combo.error ? combo.id + '-error' : null"
+      [attr.aria-busy]="combo.cargando"
+      [value]="combo.texto"
+      (focus)="combo.abrir()"
+      (click)="combo.abrir()"
+      (input)="combo.alEscribir($event)"
+      (keydown)="combo.alTeclear($event)"
+    />
+
+    <button
+      type="button"
+      class="combo-toggle"
+      tabindex="-1"
+      [attr.aria-label]="ariaToggle"
+      [attr.aria-expanded]="combo.abierto"
+      (click)="alternar(entrada)"
+    >
+      <mat-icon [class.rotado]="combo.abierto">expand_more</mat-icon>
+    </button>
+
+    <ul
+      class="combo-lista"
+      role="listbox"
+      *ngIf="combo.abierto && combo.filtradas.length > 0"
+      [id]="combo.id + '-lista'"
+      [attr.aria-labelledby]="combo.id + '-etiqueta'"
+    >
+      <li
+        class="combo-opcion"
+        *ngFor="let op of combo.filtradas; let i = index; trackBy: combo.trackByValor"
+        role="option"
+        [id]="combo.id + '-op-' + i"
+        [attr.title]="op.titulo"
+        [class.activa]="i === combo.indice"
+        [class.seleccionada]="combo.esSeleccionada(op)"
+        [attr.aria-selected]="combo.esSeleccionada(op)"
+        (mousedown)="$event.preventDefault()"
+        (click)="combo.seleccionar(op)"
+      >
+        <span class="opcion-texto">
+          <span class="opcion-titulo">{{ op.etiqueta }}</span>
+          <span class="opcion-subtitulo" *ngIf="op.subtitulo">{{ op.subtitulo }}</span>
+        </span>
+        <mat-icon *ngIf="combo.esSeleccionada(op)">check</mat-icon>
+      </li>
+    </ul>
+
+    <div class="combo-lista" *ngIf="combo.abierto && combo.filtradas.length === 0 && !combo.error">
+      <p class="combo-vacio">{{ combo.cargando ? mensajeCargando : 'Sin resultados' }}</p>
+    </div>
+  </div>
+
+  <div class="combo-error" *ngIf="combo.error" [id]="combo.id + '-error'">
+    <span>{{ mensajeError }}</span>
+    <button type="button" class="combo-reintentar" (click)="combo.reintentar()">Reintentar</button>
+  </div>
+
+  <p class="solo-lectores" role="status">{{ anuncio }}</p>
+</div>

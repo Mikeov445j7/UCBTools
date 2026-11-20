@@ -1,0 +1,120 @@
+<main class="test-adrian">
+  <section class="test-adrian__hero">
+    <p class="test-adrian__eyebrow">UCBVANTools</p>
+    <h1>Tests Adrian</h1>
+    <p class="test-adrian__descripcion">
+      Demostración de las librerías migradas desde sgt-multitools: marco de aplicación, menú de tarjetas,
+      combobox dinámico y herramientas de autoridades.
+    </p>
+  </section>
+
+  <section class="test-adrian__panel fade-in">
+    <h2 class="test-adrian__panel-titulo">Marco de aplicación</h2>
+    <div class="test-adrian__marco">
+      <ucb-marco-aplicacion [titulo]="tituloMarco" [secciones]="seccionesMarco" [esPrincipal]="false">
+        <p class="test-adrian__descripcion">
+          Este contenido se proyecta dentro del marco con ng-content. En una aplicación real aquí se coloca el
+          router-outlet del consumidor.
+        </p>
+      </ucb-marco-aplicacion>
+    </div>
+  </section>
+
+  <section class="test-adrian__panel fade-in">
+    <h2 class="test-adrian__panel-titulo">Menú de tarjetas</h2>
+    <ucb-menu-tarjetas [items]="itemsMenu" etiqueta="Menú de tarjetas de ejemplo"></ucb-menu-tarjetas>
+  </section>
+
+  <section class="test-adrian__panel fade-in">
+    <h2 class="test-adrian__panel-titulo">Combobox dinámico</h2>
+    <ucb-combobox-dinamico
+      etiqueta="Buscar persona"
+      placeholder="Buscar persona por nombre..."
+      [resultados]="resultadosPersonas"
+      (terminoBuscado)="buscarPersonas($event)"
+      (itemSeleccionado)="seleccionarPersona($event)"
+    ></ucb-combobox-dinamico>
+
+    <div aria-live="polite">
+      <div *ngIf="personaSeleccionada" class="test-adrian__seleccion">
+        <h3>Persona seleccionada</h3>
+        <p>{{ nombrePersonaSeleccionada || 'Sin nombre registrado' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="test-adrian__panel fade-in">
+    <h2 class="test-adrian__panel-titulo">Autoridades</h2>
+
+    <div class="test-adrian__barra">
+      <div class="test-adrian__regional">
+        <ucb-selector-regional
+          [regionales]="regionales"
+          [idSeleccionado]="regionalSeleccionada?.idRegional ?? null"
+          [cargando]="cargandoRegionales"
+          [error]="errorRegionales"
+          (regionalChange)="alCambiarRegional($event)"
+          (reintentar)="cargarRegionales()"
+        ></ucb-selector-regional>
+      </div>
+
+      <button type="button" class="test-adrian__boton" (click)="abrirAsignar()">Asignar autoridad</button>
+      <button
+        type="button"
+        class="test-adrian__boton test-adrian__boton--secundario"
+        [disabled]="!autoridadDetalle"
+        (click)="editarAutoridad()"
+      >
+        Editar autoridad
+      </button>
+    </div>
+
+    <ucb-lista-autoridades-sede
+      [autoridades]="autoridadesSede"
+      [idSede]="regionalSeleccionada?.idRegional ?? null"
+      [cargando]="cargandoAutoridadesSede"
+      [error]="errorAutoridadesSede"
+      (autoridadSeleccionada)="alSeleccionarAutoridad($event)"
+      (reintentar)="cargarAutoridadesSede()"
+    ></ucb-lista-autoridades-sede>
+
+    <ucb-detalle-autoridad
+      [visible]="idAutoridadSeleccionada !== null"
+      [autoridad]="autoridadDetalle"
+      [cargando]="cargandoDetalle"
+      [error]="errorDetalle"
+      (cerrar)="cerrarDetalle()"
+      (reintentar)="cargarDetalle()"
+    ></ucb-detalle-autoridad>
+
+    <ucb-editar-autoridad
+      *ngIf="autoridadEnEdicion"
+      [autoridad]="autoridadEnEdicion"
+      [cargos]="cargos"
+      [cargandoCargos]="cargandoCargos"
+      [errorCargos]="errorCargos"
+      (cerrar)="cerrarEdicion()"
+      (guardar)="guardarEdicion($event)"
+      (reintentarCargos)="cargarCargos()"
+    ></ucb-editar-autoridad>
+
+    <ucb-asignar-autoridad
+      *ngIf="mostrarAsignar"
+      [autoridades]="todasLasAutoridades"
+      [cargandoAutoridades]="cargandoTodasLasAutoridades"
+      [errorAutoridades]="errorTodasLasAutoridades"
+      [detalle]="detalleAsignacion"
+      [cargandoDetalle]="cargandoDetalleAsignacion"
+      [errorDetalle]="errorDetalleAsignacion"
+      [cargos]="cargos"
+      [cargandoCargos]="cargandoCargos"
+      [errorCargos]="errorCargos"
+      (cerrar)="cerrarAsignar()"
+      (autoridadElegida)="cargarDetalleAsignacion($event)"
+      (reintentarAutoridades)="cargarTodasLasAutoridades()"
+      (reintentarDetalle)="reintentarDetalleAsignacion()"
+      (reintentarCargos)="cargarCargos()"
+      (guardar)="guardarAsignacion($event)"
+    ></ucb-asignar-autoridad>
+  </section>
+</main>

@@ -1,0 +1,24 @@
+@use '../autoridades-compartido' as ac;
+
+@include ac.overlay-modal;
+@include ac.modal;
+@include ac.encabezado-modal;
+@include ac.etiqueta;
+@include ac.campo;
+@include ac.input;
+@include ac.switch;
+@include ac.badges;
+@include ac.grid-datos;
+@include ac.pie-botones;
+@include ac.solo-lectores;
+
+.modal {
+  overflow: hidden;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}

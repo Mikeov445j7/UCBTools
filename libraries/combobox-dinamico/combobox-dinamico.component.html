@@ -1,0 +1,46 @@
+<div class="combobox-dinamico">
+  <label class="combobox-dinamico__etiqueta" [class.combobox-dinamico__solo-lectores]="!etiqueta" [for]="idBase">
+    {{ etiqueta || placeholder }}
+  </label>
+
+  <input
+    #searchInput
+    class="combobox-dinamico__input"
+    type="text"
+    role="combobox"
+    autocomplete="off"
+    aria-autocomplete="list"
+    [id]="idBase"
+    [placeholder]="placeholder"
+    [attr.aria-expanded]="abierto"
+    [attr.aria-controls]="abierto ? idBase + '-lista' : null"
+    [attr.aria-activedescendant]="abierto && indiceActivo >= 0 ? idBase + '-op-' + indiceActivo : null"
+    (input)="alEscribir($event)"
+    (keydown)="alTeclear($event)"
+  />
+
+  <ul
+    *ngIf="abierto && resultados.length > 0"
+    class="combobox-dinamico__lista"
+    role="listbox"
+    [id]="idBase + '-lista'"
+    [attr.aria-label]="etiqueta || placeholder"
+  >
+    <li
+      *ngFor="let item of resultados; let i = index"
+      class="combobox-dinamico__item"
+      role="option"
+      [id]="idBase + '-op-' + i"
+      [class.combobox-dinamico__item--activo]="i === indiceActivo"
+      [attr.aria-selected]="i === indiceActivo"
+      [attr.data-id]="item['id']"
+      (mousedown)="$event.preventDefault()"
+      (click)="seleccionarItem(item)"
+    >
+      <span class="combobox-dinamico__nombre">{{ obtenerTitulo(item) }}</span>
+      <span class="combobox-dinamico__subtitulo" *ngIf="obtenerSubtitulo(item)">{{ obtenerSubtitulo(item) }}</span>
+    </li>
+  </ul>
+
+  <p class="combobox-dinamico__solo-lectores" role="status">{{ anuncio }}</p>
+</div>

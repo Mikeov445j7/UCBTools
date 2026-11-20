@@ -1,0 +1,157 @@
+:host {
+  display: block;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.marco-aplicacion {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: white;
+}
+
+.marco-aplicacion__header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  color: #0f172a;
+  border-bottom: 1px solid #dfe7f1;
+}
+
+.marco-aplicacion__titulo-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.marco-aplicacion__titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  overflow-wrap: anywhere;
+}
+
+.marco-aplicacion__seccion {
+  max-width: 100%;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #075985;
+  font-size: 0.8rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.marco-aplicacion__solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.marco-aplicacion__volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  min-height: 2.75rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: white;
+  color: #0f172a;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: #93c5fd;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+}
+
+.marco-aplicacion__main {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 3rem 1.5rem;
+  background: white;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.marco-aplicacion__footer {
+  flex: 0 0 auto;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.85rem;
+  text-align: center;
+  background: #f8fafc;
+  color: #475569;
+  border-top: 1px solid #dfe7f1;
+
+  p {
+    margin: 0;
+  }
+}
+
+@media (max-width: 650px) {
+  .marco-aplicacion__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .marco-aplicacion__titulo {
+    font-size: 1.1rem;
+  }
+
+  .marco-aplicacion__volver {
+    justify-content: center;
+  }
+
+  .marco-aplicacion__main {
+    padding: 1.5rem 1rem;
+  }
+
+  .marco-aplicacion__footer {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marco-aplicacion__volver {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

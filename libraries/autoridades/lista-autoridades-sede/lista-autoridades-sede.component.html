@@ -1,0 +1,36 @@
+<div aria-live="polite">
+  <p class="estado" *ngIf="cargando">
+    <span class="spinner" aria-hidden="true"></span>
+    <span>Cargando autoridades...</span>
+  </p>
+
+  <p class="estado-vacio" *ngIf="!cargando && !error && idSede !== null && autoridades.length === 0">
+    No hay autoridades registradas para esta sede.
+  </p>
+
+  <p class="solo-lectores" *ngIf="!cargando && autoridades.length > 0">
+    {{ autoridades.length === 1 ? '1 autoridad encontrada' : autoridades.length + ' autoridades encontradas' }}
+  </p>
+</div>
+
+<div class="estado-error" role="alert" *ngIf="error && !cargando">
+  <p>No se pudo cargar la lista de autoridades.</p>
+  <button type="button" class="btn-reintentar" (click)="reintentar.emit()">Reintentar</button>
+</div>
+
+<ul class="lista-autoridades" [attr.aria-label]="etiqueta" *ngIf="!cargando && autoridades.length > 0">
+  <li *ngFor="let item of autoridades; trackBy: trackById">
+    <button
+      type="button"
+      class="celda-autoridad"
+      aria-haspopup="dialog"
+      [class.activo]="item === seleccionada"
+      [attr.aria-current]="item === seleccionada ? 'true' : null"
+      (click)="seleccionar(item)"
+    >
+      <span class="nombre">{{ valor(item.nombreCompleto) }}</span>
+      <span class="cargo">{{ valor(item.cargo) }}</span>
+      <span class="sede">{{ valor(item.nombreSede) }}</span>
+    </button>
+  </li>
+</ul>
