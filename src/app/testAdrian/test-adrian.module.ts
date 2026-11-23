@@ -6,6 +6,7 @@ import { AutoridadesModule } from '../../../libraries/autoridades';
 import { ComboboxDinamicoModule } from '../../../libraries/combobox-dinamico';
 import { MarcoAplicacionModule } from '../../../libraries/marco-aplicacion';
 import { MenuTarjetasModule } from '../../../libraries/menu-tarjetas';
+import { ReportesModule } from '../../../libraries/reportes';
 import { TestAdrianComponent } from './test-adrian.component';
 
 @NgModule({
@@ -17,6 +18,7 @@ import { TestAdrianComponent } from './test-adrian.component';
     MenuTarjetasModule,
     ComboboxDinamicoModule,
     AutoridadesModule,
+    ReportesModule,
   ],
 })
 export class TestAdrianModule {}

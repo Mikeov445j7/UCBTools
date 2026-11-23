@@ -11,8 +11,15 @@ import {
 import { ElementoComboboxDinamico } from '../../../libraries/combobox-dinamico';
 import { MarcoSeccion } from '../../../libraries/marco-aplicacion';
 import { MenuTarjetaItem } from '../../../libraries/menu-tarjetas';
+import {
+  ConfigReporte,
+  EventoErrorCarga,
+  EventoFilaSeleccionada,
+  RegistroReporte,
+} from '../../../libraries/reportes';
 import { AutoridadService } from '../services/autoridad.service';
 import { PersonaService } from '../services/persona.service';
+import { ReporteService } from '../services/reporte.service';
 
 @Component({
   selector: 'app-test-adrian',
@@ -64,6 +71,13 @@ export class TestAdrianComponent implements OnInit, OnDestroy {
   cargandoCargos = false;
   errorCargos = false;
 
+  configReporte: ConfigReporte;
+  datosReporte: RegistroReporte[] | null = null;
+  cargandoReporte = false;
+  errorReporte: string | null = null;
+  filaReporteSeleccionada: RegistroReporte | null = null;
+
+  private reporteSub?: Subscription;
   private personasSub?: Subscription;
   private regionalesSub?: Subscription;
   private autoridadesSedeSub?: Subscription;
@@ -75,13 +89,18 @@ export class TestAdrianComponent implements OnInit, OnDestroy {
   constructor(
     private readonly autoridadService: AutoridadService,
     private readonly personaService: PersonaService,
-  ) {}
+    private readonly reporteService: ReporteService,
+  ) {
+    this.configReporte = this.reporteService.obtenerConfiguracion('nominaciones');
+  }
 
   ngOnInit(): void {
     this.cargarRegionales();
+    this.cargarReporte();
   }
 
   ngOnDestroy(): void {
+    this.reporteSub?.unsubscribe();
     this.personasSub?.unsubscribe();
     this.regionalesSub?.unsubscribe();
     this.autoridadesSedeSub?.unsubscribe();
@@ -298,6 +317,43 @@ export class TestAdrianComponent implements OnInit, OnDestroy {
 
   reintentarDetalleAsignacion(): void {
     this.cargarDetalleAsignacion(this.autoridadAsignacion);
+  }
+
+  cargarReporte(): void {
+    this.reporteSub?.unsubscribe();
+    this.cargandoReporte = true;
+    this.errorReporte = null;
+    this.filaReporteSeleccionada = null;
+    this.reporteSub = this.reporteService.obtenerDatos(this.configReporte).subscribe({
+      next: (lista) => {
+        this.datosReporte = Array.isArray(lista) ? lista : [];
+        this.cargandoReporte = false;
+      },
+      error: (error: unknown) => {
+        this.datosReporte = null;
+        this.cargandoReporte = false;
+        this.errorReporte = this.reporteService.describirError(error);
+      },
+    });
+  }
+
+  alSeleccionarFilaReporte(evento: EventoFilaSeleccionada): void {
+    this.filaReporteSeleccionada = evento.fila;
+  }
+
+  alErrorReporte(_: EventoErrorCarga): void {
+    this.filaReporteSeleccionada = null;
+  }
+
+  get resumenFilaReporte(): string {
+    const fila = this.filaReporteSeleccionada;
+    if (!fila) {
+      return '';
+    }
+    return Object.entries(fila)
+      .filter(([, valor]) => valor !== null && valor !== undefined && valor !== '')
+      .map(([clave, valor]) => `${clave}: ${String(valor)}`)
+      .join(' | ');
   }
 
   cargarCargos(): void {

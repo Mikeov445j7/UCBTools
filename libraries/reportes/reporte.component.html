@@ -1,0 +1,166 @@
+<div aria-live="polite">
+  <ng-container [ngSwitch]="estado">
+    <p *ngSwitchCase="'cargando'" class="reporte__estado">
+      <span class="reporte__spinner" aria-hidden="true"></span>
+      <span>Cargando datos...</span>
+    </p>
+
+    <div *ngSwitchCase="'sin-fuente'" class="reporte__aviso reporte__aviso--error" role="alert">
+      <p>{{ mensajeError }}</p>
+    </div>
+
+    <div *ngSwitchCase="'error'" class="reporte__aviso reporte__aviso--error" role="alert">
+      <p>{{ mensajeError }}</p>
+      <button type="button" class="reporte__boton reporte__boton--reintento" (click)="reintentar.emit()">
+        Reintentar
+      </button>
+    </div>
+
+    <div *ngSwitchCase="'sin-datos'" class="reporte__aviso reporte__aviso--info">
+      <p>El servicio respondió, pero no hay registros para mostrar.</p>
+      <button type="button" class="reporte__boton reporte__boton--secundario" (click)="reintentar.emit()">
+        Actualizar
+      </button>
+    </div>
+
+    <section *ngSwitchCase="'listo'" class="reporte">
+      <header class="reporte__cabecera">
+        <h3 class="reporte__titulo" *ngIf="config.titulo">{{ config.titulo }}</h3>
+        <button
+          *ngIf="config.configurable !== false"
+          type="button"
+          class="reporte__boton reporte__boton--secundario"
+          [attr.aria-expanded]="panelAbierto"
+          [attr.aria-controls]="id + '-panel'"
+          (click)="panelAbierto = !panelAbierto"
+        >
+          {{ panelAbierto ? 'Cerrar configuración' : 'Configurar' }}
+        </button>
+      </header>
+
+      <div class="reporte__panel" *ngIf="panelAbierto" [id]="id + '-panel'">
+        <table class="reporte__config">
+          <caption class="reporte__solo-lectores">Configuración de columnas</caption>
+          <thead>
+            <tr>
+              <th scope="col">Columna</th>
+              <th scope="col">Visible</th>
+              <th scope="col">Filtro</th>
+              <th scope="col">Buscador</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of columnas; trackBy: trackClave">
+              <td>{{ c.etiqueta }}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  [checked]="c.visible"
+                  [attr.aria-label]="'Mostrar columna ' + c.etiqueta"
+                  (change)="alternarVisible(c)"
+                />
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  [checked]="c.filtro"
+                  [attr.aria-label]="'Filtrar por ' + c.etiqueta"
+                  (change)="alternarFiltro(c)"
+                />
+              </td>
+              <td>
+                <input
+                  type="radio"
+                  [name]="id + '-buscador'"
+                  [checked]="buscador === c.clave"
+                  [attr.aria-label]="'Buscar en ' + c.etiqueta"
+                  (change)="elegirBuscador(c.clave)"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="reporte__filtros" *ngIf="buscador || filtros.length">
+        <div class="reporte__campo reporte__campo--buscador" *ngIf="buscador">
+          <label class="reporte__etiqueta" [attr.for]="id + '-buscador-texto'">Buscar</label>
+          <input
+            type="text"
+            class="reporte__control"
+            placeholder="Buscar..."
+            [id]="id + '-buscador-texto'"
+            [value]="termino"
+            (input)="alBuscar($event)"
+          />
+        </div>
+
+        <div class="reporte__campo" *ngFor="let f of filtros; trackBy: trackClave">
+          <label class="reporte__etiqueta" [attr.for]="id + '-filtro-' + f.clave">{{ f.etiqueta }}</label>
+
+          <select
+            *ngIf="f.tipo === 'seleccion'"
+            class="reporte__control"
+            [id]="id + '-filtro-' + f.clave"
+            [value]="valores[f.clave] || ''"
+            (change)="alFiltrar(f.clave, $event)"
+          >
+            <option value="">Todos</option>
+            <option *ngFor="let o of f.opciones" [value]="o.valor">{{ o.etiqueta }}</option>
+          </select>
+
+          <ng-container *ngIf="f.tipo === 'lista'">
+            <input
+              type="text"
+              class="reporte__control"
+              placeholder="Elegir o escribir..."
+              [id]="id + '-filtro-' + f.clave"
+              [attr.list]="id + '-lista-' + f.clave"
+              [value]="valores[f.clave] || ''"
+              (input)="alFiltrar(f.clave, $event)"
+            />
+            <datalist [id]="id + '-lista-' + f.clave">
+              <option *ngFor="let o of f.opciones" [value]="o.valor"></option>
+            </datalist>
+          </ng-container>
+        </div>
+
+        <button type="button" class="reporte__boton reporte__boton--secundario" (click)="limpiar()">
+          Limpiar filtros
+        </button>
+      </div>
+
+      <div class="reporte__scroll" *ngIf="filas.length; else vacio">
+        <table class="reporte__tabla">
+          <caption class="reporte__solo-lectores">{{ config.titulo || 'Reporte' }}</caption>
+          <thead>
+            <tr>
+              <th scope="col" *ngFor="let c of columnasVisibles; trackBy: trackClave">{{ c.etiqueta }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let fila of filas; trackBy: trackFila"
+              class="reporte__fila"
+              tabindex="0"
+              [class.reporte__fila--activa]="fila === filaActiva"
+              [attr.aria-selected]="fila === filaActiva"
+              (click)="seleccionar(fila)"
+              (keydown.enter)="seleccionar(fila)"
+            >
+              <td *ngFor="let c of columnasVisibles; trackBy: trackClave" [title]="celda(c, fila)">
+                {{ celda(c, fila) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #vacio>
+        <p class="reporte__vacio">{{ config.mensajeVacio || 'No hay resultados con los filtros aplicados.' }}</p>
+      </ng-template>
+
+      <p class="reporte__total">{{ filas.length }} de {{ registros.length }} registros</p>
+    </section>
+  </ng-container>
+</div>

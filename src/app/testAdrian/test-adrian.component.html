@@ -4,7 +4,7 @@
     <h1>Tests Adrian</h1>
     <p class="test-adrian__descripcion">
       Demostración de las librerías migradas desde sgt-multitools: marco de aplicación, menú de tarjetas,
-      combobox dinámico y herramientas de autoridades.
+      combobox dinámico, herramientas de autoridades y reportes.
     </p>
   </section>
 
@@ -116,5 +116,26 @@
       (reintentarCargos)="cargarCargos()"
       (guardar)="guardarAsignacion($event)"
     ></ucb-asignar-autoridad>
+  </section>
+
+  <section class="test-adrian__panel fade-in">
+    <h2 class="test-adrian__panel-titulo">Reportes</h2>
+
+    <ucb-reporte
+      [config]="configReporte"
+      [datos]="datosReporte"
+      [cargando]="cargandoReporte"
+      [error]="errorReporte"
+      (reintentar)="cargarReporte()"
+      (filaSeleccionada)="alSeleccionarFilaReporte($event)"
+      (errorCarga)="alErrorReporte($event)"
+    ></ucb-reporte>
+
+    <div aria-live="polite">
+      <div *ngIf="filaReporteSeleccionada" class="test-adrian__seleccion">
+        <h3>Fila seleccionada</h3>
+        <p>{{ resumenFilaReporte }}</p>
+      </div>
+    </div>
   </section>
 </main>
